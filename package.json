@@ -1,0 +1,11 @@
+{
+  "name": "ectd-module-1-checker",
+  "version": "5.1.0",
+  "private": true,
+  "description": "Static browser tool for comparing regional eCTD Module 1 structures.",
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "check": "node --check core.js && node --check data.js && node --check zip.js && node --check app.js && node tests/run-tests.js"
+  }
+}
+
