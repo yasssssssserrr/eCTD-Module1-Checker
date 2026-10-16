@@ -48,7 +48,7 @@ test('known children retain their explicit parents in comparisons', () => {
   const model = core.buildComparisonModel(data.ECTD_DATABASE, 'eu', 'uk', 'all');
   const byTopic = new Map(model.rows.map(row => [row.entry.topic, row]));
   assert.equal(byTopic.get('Braille (EU)').parentId, byTopic.get('Produktinformation (Labeling)').id);
-  assert.equal(byTopic.get('Generika / Bibliografisch').parentId, 'special-requirements');
+  assert.equal(byTopic.get('Generika / Biosimilars').parentId, 'special-requirements');
   assert.equal(byTopic.get('Clinical Expert').parentId, byTopic.get('Sachverständige / Experts').id);
 });
 
@@ -80,11 +80,11 @@ test('folder paths are nested and unique for every region', () => {
   }
 });
 
-test('Australian patent information uses the regional application-form parent once', () => {
+test('Australian patent certification uses 1.2.3 under administrative information', () => {
   const paths = core.buildFolderPaths(data.ECTD_DATABASE, 'au', 'all');
   const patentPaths = paths.filter(folder => folder.includes('patent'));
   assert.equal(patentPaths.length, 1);
-  assert.match(patentPaths[0], /12-application\/122-patent/i);
+  assert.match(patentPaths[0], /12-administrative-information\/123-patent-certification/i);
 });
 
 test('filtered export selection includes matching children and their context parent', () => {
@@ -115,7 +115,7 @@ test('CSV contains metadata, child rows, sources and formula-injection protectio
 });
 
 test('generated folder archive has valid ZIP signatures and directory entries', () => {
-  const paths = core.buildFolderPaths(data.ECTD_DATABASE, 'eu', 'initial').slice(0, 5);
+  const paths = core.buildFolderPaths(data.ECTD_DATABASE, 'eu', 'admin').slice(0, 5);
   const bytes = zip.createFolderZip(paths);
   assert.equal(bytes[0], 0x50);
   assert.equal(bytes[1], 0x4b);
@@ -132,7 +132,7 @@ test('generated folder archive has valid ZIP signatures and directory entries', 
 
 test('validation rejects a duplicated regional section', () => {
   const duplicate = {
-    ...data.ECTD_DATABASE[0],
+    ...data.ECTD_DATABASE.find(entry => entry.regions.eu),
     id: 'synthetic-duplicate',
     topic: 'Synthetic duplicate',
     parentId: null,
@@ -143,6 +143,121 @@ test('validation rejects a duplicated regional section', () => {
     data.SUBMISSION_TYPES
   );
   assert.ok(result.errors.some(error => error.startsWith('Duplicate eu section')));
+});
+
+test('corrected EU regulatory headings match Appendix 2', () => {
+  const section = id => data.ECTD_DATABASE.find(entry => entry.id === id).regions.eu;
+  assert.equal(section('braille').num, '1.3.6');
+  assert.equal(section('generics').num, '1.5.2');
+  assert.equal(section('bibliographical').num, '1.5.1');
+  assert.equal(section('exceptional').num, '1.5.4');
+  assert.equal(section('conditional-ma').num, '1.5.5');
+  assert.equal(section('specimen').title, 'Specimen');
+  assert.ok(!data.ECTD_DATABASE.some(entry => entry.regions.eu?.num === '1.1'));
+});
+
+test('FDA sections are not confused with unrelated regulatory concepts', () => {
+  const section = id => data.ECTD_DATABASE.find(entry => entry.id === id).regions.us;
+  assert.equal(section('field-copy').num, '1.3.2');
+  assert.equal(section('application-status').title, 'Application Status');
+  assert.equal(section('protocol-assessment').num, '1.8');
+  assert.equal(section('dispute-resolution').num, '1.10');
+  assert.equal(section('investigational-plan').num, '1.20');
+  assert.equal(data.ECTD_DATABASE.find(entry => entry.id === 'hc-summaries').regions.us, undefined);
+});
+
+test('Japanese headings match the official PMDA context-of-use codes', () => {
+  const section = id => data.ECTD_DATABASE.find(entry => entry.id === id).regions.jp;
+  assert.equal(section('certificates-jp').num, '1.3');
+  assert.equal(section('patent-exclusivity').num, '1.4');
+  assert.equal(section('prescribing-information').num, '1.8');
+  assert.equal(section('risk-management').num, '1.11');
+  assert.equal(section('related-products-jp').num, '1.7');
+  assert.equal(section('attached-documents-jp').num, '1.12');
+});
+
+test('all displayed headings carry review evidence without invented requiredness', () => {
+  for (const entry of data.ECTD_DATABASE) for (const [region, section] of Object.entries(entry.regions)) {
+    assert.equal(section.requirement, 'not-assessed');
+    assert.equal(section.reviewedAt, data.DATASET_META.lastReviewedAt);
+    assert.ok(section.source.locator);
+    assert.equal(section.reviewStatus, region === 'uk' ? 'format-reference' : 'source-checked');
+  }
+});
+
+test('Canadian cover letter, forms and lifecycle table use their schema positions', () => {
+  const section = id => data.ECTD_DATABASE.find(entry => entry.id === id).regions.ca;
+  assert.equal(section('cover-letter').num, '1.0.1');
+  assert.equal(section('application-forms').num, '1.2.1');
+  assert.equal(section('lifecycle-table').num, '1.0.2');
+});
+
+test('filtered planning folders preserve regional ancestors outside the focus', () => {
+  const paths = core.buildFolderPaths(data.ECTD_DATABASE, 'ca', 'safety');
+  assert.ok(paths.some(folder => /13-product-information\/138-pharmacovigilance-information\/1382-risk-management-plan/.test(folder)));
+});
+
+test('Japanese root overrides do not inherit editorial comparison parents', () => {
+  const paths = core.buildFolderPaths(data.ECTD_DATABASE, 'jp', 'all');
+  assert.ok(paths.includes('m1/jp/14-patent-status/'));
+  assert.ok(paths.includes('m1/jp/18-package-insert-draft/'));
+  assert.ok(paths.includes('m1/jp/111-risk-management-plan-draft/'));
+});
+
+test('validation rejects duplicate numbers even with a different title', () => {
+  const original = data.ECTD_DATABASE.find(entry => entry.regions.eu);
+  const duplicate = { ...original, id: 'duplicate-number', regions: { eu: { ...original.regions.eu, title: 'Different title' } } };
+  const result = core.validateDatabase([...data.ECTD_DATABASE, duplicate], data.REGIONS, data.SUBMISSION_TYPES);
+  assert.ok(result.errors.some(error => error.startsWith('Duplicate eu section')));
+});
+
+test('validation detects regional hierarchy cycles and malformed arrays', () => {
+  const entries = data.ECTD_DATABASE.map(entry => ({ ...entry, regionalParentIds: { ...entry.regionalParentIds } }));
+  entries[0].regionalParentIds.ca = entries[0].id;
+  entries[1].regions = { eu: { ...entries[1].regions.eu, submissionTypes: null } };
+  const result = core.validateDatabase(entries, data.REGIONS, data.SUBMISSION_TYPES);
+  assert.ok(result.errors.some(error => error.includes('Regional hierarchy cycle')));
+  assert.ok(result.errors.some(error => error.includes('submissionTypes array')));
+});
+
+test('accent-insensitive search finds paediatrics with plain Latin input', () => {
+  const model = core.buildComparisonModel(data.ECTD_DATABASE, 'eu', 'us');
+  const result = core.filterComparisonRows(model.rows, { search: 'padiatrie' });
+  assert.ok(result.matchingIds.has('paediatrics'));
+});
+
+test('CSV neutralizes whitespace-prefixed spreadsheet formulas', () => {
+  const model = core.buildComparisonModel(data.ECTD_DATABASE, 'eu', 'us');
+  for (const topic of [' =WEBSERVICE("bad")', '\t=1+1', '\r@SUM(1)']) {
+    const row = { ...model.rows[0], entry: { ...model.rows[0].entry, topic } };
+    const csv = core.buildComparisonCsv([row], data.REGIONS.eu, data.REGIONS.us, data.DATASET_META);
+    assert.ok(csv.includes(`"'${topic.replace(/"/g, '""')}"`));
+  }
+});
+
+test('planning ZIP includes a readable notice with valid CRC and file sizes', () => {
+  const content = 'PLANNING ONLY — not an eCTD submission template.';
+  const bytes = zip.createFolderZip(['m1/eu/'], new Date(), { 'README.txt': content });
+  const buffer = Buffer.from(bytes);
+  let offset = 0;
+  const files = new Map();
+  while (buffer.readUInt32LE(offset) === 0x04034b50) {
+    const size = buffer.readUInt32LE(offset + 18);
+    const nameSize = buffer.readUInt16LE(offset + 26);
+    const name = buffer.subarray(offset + 30, offset + 30 + nameSize).toString('utf8');
+    const body = buffer.subarray(offset + 30 + nameSize, offset + 30 + nameSize + size);
+    assert.equal(buffer.readUInt32LE(offset + 14), zip.crc32(body));
+    files.set(name, body.toString('utf8'));
+    offset += 30 + nameSize + size;
+  }
+  assert.equal(files.get('README.txt'), content);
+  assert.equal(buffer.readUInt32LE(offset), 0x02014b50);
+});
+
+test('ZIP rejects directory traversal and absolute paths', () => {
+  for (const folder of ['../outside/', '/absolute/', 'C:\\absolute\\', 'm1/../outside/']) {
+    assert.throws(() => zip.createFolderZip([folder]), /Unsafe archive path/);
+  }
 });
 
 let failures = 0;

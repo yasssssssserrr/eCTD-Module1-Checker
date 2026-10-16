@@ -2,7 +2,11 @@
 (function attachEctdCore(global) {
   'use strict';
 
-  const VALID_REQUIREMENTS = new Set(['mandatory', 'conditional', 'optional']);
+  const VALID_REQUIREMENTS = new Set(['mandatory', 'conditional', 'optional', 'not-assessed']);
+
+  function normalizeSearch(value) {
+    return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('de').trim();
+  }
 
   function slugify(value) {
     return String(value || '')
@@ -31,7 +35,7 @@
     return rawEntries.map((entry, order) => {
       const id = entry.id || topicToId.get(entry.topic);
       const parentTopic = entry.parentTopic || parentByTopic[entry.topic] || null;
-      const parentId = parentTopic ? topicToId.get(parentTopic) || slugify(parentTopic) : null;
+      const parentId = entry.parentId || (parentTopic ? topicToId.get(parentTopic) || slugify(parentTopic) : null);
       const regionalParentTopics = parentByRegion[entry.topic] || {};
       const regionalParentIds = Object.fromEntries(
         Object.entries(regionalParentTopics).map(([regionKey, topic]) => [
@@ -45,7 +49,7 @@
           regionKey,
           {
             ...section,
-            requirement: section.requirement || entry.requirement || 'optional',
+            requirement: section.requirement || entry.requirement || 'not-assessed',
             reqCondition: section.reqCondition || entry.reqCondition || '',
             submissionTypes: [...(section.submissionTypes || entry.submissionTypes || [])],
             documents: cloneList(section.documents || entry.documents),
@@ -94,13 +98,17 @@
         if (!VALID_REQUIREMENTS.has(section.requirement)) {
           errors.push(`${entry.id}/${regionKey} has invalid requirement ${section.requirement}.`);
         }
-        section.submissionTypes.forEach(type => {
+        if (!Array.isArray(section.submissionTypes)) {
+          errors.push(`${entry.id}/${regionKey} requires a submissionTypes array.`);
+        }
+        (Array.isArray(section.submissionTypes) ? section.submissionTypes : []).forEach(type => {
           if (!submissionTypes[type] || type === 'all') {
             errors.push(`${entry.id}/${regionKey} has invalid submission type ${type}.`);
           }
         });
 
-        const signature = `${section.num}|${section.title}`;
+        if (!/^1(?:\.\d+)+$/.test(section.num)) errors.push(`${entry.id}/${regionKey} has invalid section number ${section.num}.`);
+        const signature = section.num;
         const previous = regionNumbers[regionKey].get(signature);
         if (previous) {
           errors.push(`Duplicate ${regionKey} section ${signature}: ${previous} and ${entry.id}.`);
@@ -109,6 +117,17 @@
         }
         if (!section.source?.url) {
           warnings.push(`${entry.id}/${regionKey} has no authoritative source URL.`);
+        } else {
+          try {
+            if (new URL(section.source.url).protocol !== 'https:') throw new Error('HTTPS required');
+          } catch {
+            errors.push(`${entry.id}/${regionKey} has an invalid source URL.`);
+          }
+        }
+        if (['source-checked', 'format-reference'].includes(section.reviewStatus)) {
+          if (!section.source?.locator || !/^\d{4}-\d{2}-\d{2}$/.test(section.reviewedAt || '')) {
+            errors.push(`${entry.id}/${regionKey} lacks review evidence.`);
+          }
         }
       });
     });
@@ -119,7 +138,7 @@
       }
       Object.entries(entry.regionalParentIds || {}).forEach(([regionKey, parentId]) => {
         if (!regions[regionKey]) errors.push(`${entry.id} has parent override for unknown region ${regionKey}.`);
-        if (!entryById.has(parentId)) errors.push(`${entry.id}/${regionKey} references missing parent ${parentId}.`);
+        if (parentId && !entryById.has(parentId)) errors.push(`${entry.id}/${regionKey} references missing parent ${parentId}.`);
       });
 
       const visited = new Set([entry.id]);
@@ -132,6 +151,19 @@
         visited.add(cursor.parentId);
         cursor = entryById.get(cursor.parentId);
       }
+      Object.keys(regions).forEach(regionKey => {
+        const seen = new Set([entry.id]);
+        let parentId = getRegionalParentId(entry, regionKey);
+        while (parentId) {
+          if (seen.has(parentId)) {
+            errors.push(`Regional hierarchy cycle detected at ${entry.id}/${regionKey}.`);
+            break;
+          }
+          seen.add(parentId);
+          const parent = entryById.get(parentId);
+          parentId = parent ? getRegionalParentId(parent, regionKey) : null;
+        }
+      });
     });
 
     return { errors, warnings };
@@ -183,7 +215,7 @@
       const pair = direct.get(entry.id) || { a: null, b: null };
       const contextOnly = !direct.has(entry.id);
       const status = contextOnly ? 'context' : structuralStatus(pair.a, pair.b);
-      const searchText = [
+      const searchText = normalizeSearch([
         entry.topic,
         pair.a?.num,
         pair.a?.title,
@@ -192,7 +224,9 @@
         entry.note,
         pair.a?.reqCondition,
         pair.b?.reqCondition,
-      ].filter(Boolean).join(' ').toLocaleLowerCase('de');
+        pair.a?.source?.name,
+        pair.b?.source?.name,
+      ].filter(Boolean).join(' '));
 
       rows.push({
         id: entry.id,
@@ -225,7 +259,7 @@
 
   function filterComparisonRows(rows, options = {}) {
     const status = options.status || 'all';
-    const search = String(options.search || '').trim().toLocaleLowerCase('de');
+    const search = normalizeSearch(options.search);
     const byId = new Map(rows.map(row => [row.id, row]));
     const matchingIds = new Set();
     const includedIds = new Set();
@@ -251,7 +285,9 @@
   }
 
   function getRegionalParentId(entry, regionKey) {
-    return entry.regionalParentIds?.[regionKey] || entry.parentId || null;
+    return Object.hasOwn(entry.regionalParentIds || {}, regionKey)
+      ? entry.regionalParentIds[regionKey]
+      : entry.parentId || null;
   }
 
   function folderSegment(section) {
@@ -271,7 +307,7 @@
       let cursor = entry;
       while (cursor && !visited.has(cursor.id)) {
         visited.add(cursor.id);
-        const section = sectionForSubmission(cursor, regionKey, submissionType);
+        const section = cursor.regions[regionKey];
         if (section) chain.unshift(folderSegment(section));
         cursor = entryById.get(getRegionalParentId(cursor, regionKey));
       }
@@ -286,7 +322,7 @@
 
   function csvCell(value) {
     let text = String(value ?? '');
-    if (/^[=+\-@]/.test(text)) text = `'${text}`;
+    if (/^[\s\u0000-\u001f]*[=+\-@]/.test(text) || /^[\t\r\n]/.test(text)) text = `'${text}`;
     return `"${text.replace(/"/g, '""')}"`;
   }
 
@@ -295,16 +331,19 @@
       'Thema',
       `${regionA.label} – Nr.`, `${regionA.label} – Titel`, `${regionA.label} – Anforderung`,
       `${regionB.label} – Nr.`, `${regionB.label} – Titel`, `${regionB.label} – Anforderung`,
-      'Strukturstatus', 'Hinweis', 'Quelle A', 'Quelle B',
+      'Strukturstatus', 'Hinweis', 'Quelle A', 'Quelle B', 'Prüfstatus A', 'Prüfstatus B', 'Fundstelle A', 'Fundstelle B',
     ];
     const statusLabels = {
       match: 'Gleiche Nummer und Bezeichnung',
       partial: 'Abweichende Struktur',
-      missing: 'Nur in einer Region vorhanden',
+      missing: 'Keine thematische Zuordnung in der anderen Region erfasst',
       context: 'Gruppierung',
     };
     const lines = [
       ['Datenstand', metadata.lastReviewedAt || ''].map(csvCell).join(','),
+      ['Version', metadata.version || ''].map(csvCell).join(','),
+      ['Prüfumfang', metadata.scope || ''].map(csvCell).join(','),
+      ['Ansicht', metadata.focus || 'all', 'Suche', metadata.search || '', 'Filter', metadata.filter || 'all'].map(csvCell).join(','),
       ['Haftungshinweis', metadata.disclaimer || ''].map(csvCell).join(','),
       headers.map(csvCell).join(','),
     ];
@@ -316,6 +355,8 @@
         statusLabels[row.status] || row.status,
         row.entry.note || '',
         row.a?.source?.url || '', row.b?.source?.url || '',
+        row.a?.reviewStatus || '', row.b?.reviewStatus || '',
+        row.a?.source?.locator || '', row.b?.source?.locator || '',
       ].map(csvCell).join(','));
     });
     return `\uFEFF${lines.join('\n')}`;

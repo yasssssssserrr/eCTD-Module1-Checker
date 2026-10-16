@@ -4,3 +4,7 @@ Thumbs.db
 *.log
 .brooks-lint-history.json
 .agents/
+dist/
+test-results/
+playwright-report/
+.artifacts/

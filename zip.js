@@ -50,6 +50,9 @@
   function normalizePaths(paths) {
     const directories = new Set();
     paths.forEach(path => {
+      if (/^(?:[/\\]|[a-z]:)|(?:^|[/\\])\.\.(?:[/\\]|$)|\u0000/i.test(String(path))) {
+        throw new Error('Unsafe archive path.');
+      }
       const segments = String(path)
         .replace(/\\/g, '/')
         .split('/')
@@ -61,17 +64,21 @@
     return [...directories].sort((left, right) => left.localeCompare(right));
   }
 
-  function createFolderZip(paths, modifiedAt = new Date()) {
+  function createFolderZip(paths, modifiedAt = new Date(), files = {}) {
     const normalizedPaths = normalizePaths(paths);
+    const entries = normalizedPaths.map(path => ({ path, data: new Uint8Array(0), directory: true }));
+    for (const [path, content] of Object.entries(files)) {
+      if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(path)) throw new Error('Unsafe archive filename.');
+      entries.push({ path, data: encoder.encode(String(content)), directory: false });
+    }
     const localParts = [];
     const centralParts = [];
     const { time, date } = dosDateTime(modifiedAt);
     let localOffset = 0;
 
-    normalizedPaths.forEach(path => {
+    entries.forEach(({ path, data, directory }) => {
       const name = encoder.encode(path);
-      const empty = new Uint8Array(0);
-      const checksum = crc32(empty);
+      const checksum = crc32(data);
 
       const localHeader = new Uint8Array(30);
       writeUint32(localHeader, 0, 0x04034B50);
@@ -81,11 +88,11 @@
       writeUint16(localHeader, 10, time);
       writeUint16(localHeader, 12, date);
       writeUint32(localHeader, 14, checksum);
-      writeUint32(localHeader, 18, 0);
-      writeUint32(localHeader, 22, 0);
+      writeUint32(localHeader, 18, data.length);
+      writeUint32(localHeader, 22, data.length);
       writeUint16(localHeader, 26, name.length);
       writeUint16(localHeader, 28, 0);
-      localParts.push(localHeader, name);
+      localParts.push(localHeader, name, data);
 
       const centralHeader = new Uint8Array(46);
       writeUint32(centralHeader, 0, 0x02014B50);
@@ -96,18 +103,18 @@
       writeUint16(centralHeader, 12, time);
       writeUint16(centralHeader, 14, date);
       writeUint32(centralHeader, 16, checksum);
-      writeUint32(centralHeader, 20, 0);
-      writeUint32(centralHeader, 24, 0);
+      writeUint32(centralHeader, 20, data.length);
+      writeUint32(centralHeader, 24, data.length);
       writeUint16(centralHeader, 28, name.length);
       writeUint16(centralHeader, 30, 0);
       writeUint16(centralHeader, 32, 0);
       writeUint16(centralHeader, 34, 0);
       writeUint16(centralHeader, 36, 0);
-      writeUint32(centralHeader, 38, 0x10);
+      writeUint32(centralHeader, 38, directory ? 0x10 : 0x20);
       writeUint32(centralHeader, 42, localOffset);
       centralParts.push(centralHeader, name);
 
-      localOffset += localHeader.length + name.length;
+      localOffset += localHeader.length + name.length + data.length;
     });
 
     const localData = concat(localParts);
@@ -116,8 +123,8 @@
     writeUint32(end, 0, 0x06054B50);
     writeUint16(end, 4, 0);
     writeUint16(end, 6, 0);
-    writeUint16(end, 8, normalizedPaths.length);
-    writeUint16(end, 10, normalizedPaths.length);
+    writeUint16(end, 8, entries.length);
+    writeUint16(end, 10, entries.length);
     writeUint32(end, 12, centralDirectory.length);
     writeUint32(end, 16, localData.length);
     writeUint16(end, 20, 0);

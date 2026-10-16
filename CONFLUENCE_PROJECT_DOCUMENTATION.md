@@ -1,9 +1,11 @@
 # eCTD Module 1 Checker
 
+> Historical version 5.1 documentation. Version 6.0.0 is documented in [README.md](README.md) and [VALIDATION_REPORT.md](VALIDATION_REPORT.md). Earlier mandatory labels, regional submission-type equivalences and official-folder claims are superseded by the reviewed scope in those documents.
+
 | Document field | Value |
 |---|---|
 | Application version | 5.1.0 |
-| Documentation status | Current |
+| Documentation status | Historical / superseded by version 6.0.0 |
 | Application status | Local prototype / internal reference tool |
 | Dataset version | 2026.09 |
 | Dataset last reviewed | 24 September 2026 |
@@ -427,3 +429,6 @@ Before wider distribution, the following responsibilities must be assigned:
 ## 16. Disclaimer
 
 The eCTD Module 1 Checker is a reference and planning aid. It is not a regulatory authority system, an approved submission validator or a substitute for current official guidance and qualified regulatory judgment. Users remain responsible for verifying all submission requirements against the latest specifications and instructions of the relevant authority.
+# Historical documentation
+
+This document describes an earlier application version. For version 6.0.0, use [README.md](README.md) and [VALIDATION_REPORT.md](VALIDATION_REPORT.md). The previous mandatory labels, cross-region submission-type equivalences and official-folder claims have been superseded by the reviewed scope documented there.

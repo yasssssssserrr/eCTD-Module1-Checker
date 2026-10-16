@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eCTD Module 1 Checker – 7 Regionen</title>
   <meta name="description" content="Vergleichen Sie die eCTD-Module-1-Abschnittsstrukturen zwischen EU, UK, US, CA, CH, AU und JP.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="bg-particles" id="bgParticles" aria-hidden="true"></div>
+  <a class="skip-link" href="#selectorCard">Zum Vergleich springen</a>
 
   <header class="app-header">
     <div class="header-inner">
@@ -30,15 +30,25 @@
           <p class="logo-subtitle">Regionale Abschnittsstruktur vergleichen</p>
         </div>
       </div>
-      <div class="header-badge"><span class="badge-dot"></span><span>EU, UK, US, CA, CH, AU &amp; JP</span></div>
+      <a class="header-badge" href="#sourcesPanel">Quellen &amp; Prüfstand ↗</a>
     </div>
   </header>
 
   <main class="main-content">
+    <section class="intro" aria-labelledby="introTitle">
+      <p class="eyebrow">REGULATORY INTELLIGENCE · MODULE 1</p>
+      <h2 id="introTitle">Sieben Regionen.<br><span>Ein klarer Vergleich.</span></h2>
+      <p>Finden Sie regionale Abschnittsnummern, vergleichen Sie Überschriften und verfolgen Sie jede Angabe bis zur offiziellen Quelle.</p>
+      <div class="intro-meta"><span>7 Behörden</span><span id="coverageCount">Quellen werden geladen …</span><span>Vollständig im Browser</span></div>
+    </section>
+    <aside class="scope-notice" aria-label="Prüfumfang">
+      <strong>Überschriften vergleichen. Anforderungen separat prüfen.</strong>
+      <p>Ausgewählte Abschnitte, keine vollständige Dossierprüfung. Themenzuordnung und Themenfokus sind redaktionell. Gleiche Nummern und Titel belegen keine inhaltliche oder rechtliche Gleichwertigkeit. „Keine Zuordnung“ bedeutet, dass dieser Vergleich keine Zuordnung erfasst.</p>
+    </aside>
     <section class="selector-card" id="selectorCard">
       <div class="selector-card-header">
-        <h2>Regionen &amp; Antragstyp auswählen</h2>
-        <p>Wählen Sie zwei Regionen und optional den Antragstyp, um nur relevante Abschnitte zu sehen.</p>
+        <h2>Ihr regionaler Vergleich</h2>
+        <p>Wählen Sie zwei Regionen. Ein Themenfokus grenzt die redaktionelle Auswahl ein.</p>
       </div>
 
       <div class="selector-row">
@@ -63,9 +73,9 @@
 
       <div class="selector-row selector-row-sub">
         <div class="selector-group selector-group-full">
-          <label for="submissionType" class="selector-label"><span class="selector-label-icon selector-label-icon-alt">③</span> Antragstyp (optional)</label>
+          <label for="submissionType" class="selector-label"><span class="selector-label-icon selector-label-icon-alt">③</span> Themenfokus</label>
           <div class="custom-select-wrapper">
-            <select id="submissionType" class="custom-select"><option value="all" selected>Alle Abschnitte anzeigen</option></select>
+            <select id="submissionType" class="custom-select"><option value="all" selected>Alle Themen</option></select>
             <span class="select-arrow" aria-hidden="true">⌄</span>
           </div>
         </div>
@@ -84,27 +94,29 @@
         </div>
         <div class="filter-pills" id="filterPills" aria-label="Strukturstatus filtern">
           <button type="button" class="filter-pill active" data-filter="all" aria-pressed="true">Alle</button>
-          <button type="button" class="filter-pill" data-filter="match" aria-pressed="false">✓ Gleiche Struktur</button>
+          <button type="button" class="filter-pill" data-filter="match" aria-pressed="false">✓ Nr. &amp; Titel gleich</button>
           <button type="button" class="filter-pill" data-filter="partial" aria-pressed="false">≈ Abweichend</button>
-          <button type="button" class="filter-pill" data-filter="missing" aria-pressed="false">✕ Fehlt</button>
+          <button type="button" class="filter-pill" data-filter="missing" aria-pressed="false">— Keine Zuordnung</button>
         </div>
       </div>
       <div class="toolbar-right">
         <button type="button" class="export-btn" id="toggleExpandAll" title="Alle auf-/zuklappen" aria-expanded="true"><span aria-hidden="true">⌄</span><span>Alle aufklappen</span></button>
-        <button type="button" class="export-btn export-btn-accent" id="exportFolders" title="Echte Ordnerstruktur als ZIP generieren"><span>📁 Ordner-ZIP</span></button>
+        <button type="button" class="export-btn" id="shareComparison" title="Link zu diesem Vergleich kopieren">Link kopieren</button>
+        <button type="button" class="export-btn export-btn-accent" id="exportFolders" title="Planungsordner aus dem Themenfokus; keine einreichfähige eCTD-Struktur"><span>Planungs-ZIP</span></button>
         <button type="button" class="export-btn" id="exportPdf" title="Als PDF drucken"><span>PDF</span></button>
         <button type="button" class="export-btn" id="exportCsv" title="Als CSV exportieren"><span>CSV</span></button>
       </div>
     </section>
 
     <section class="stats-bar" id="statsBar" hidden aria-live="polite">
-      <div class="stat-chip"><span>Paare: <strong id="statPairs">0</strong></span></div>
-      <div class="stat-chip stat-match"><span>Gleiche Struktur: <strong id="statMatches">0</strong></span></div>
+      <div class="stat-chip"><span>Themen: <strong id="statPairs">0</strong></span></div>
+      <div class="stat-chip stat-match"><span>Nr. &amp; Titel gleich: <strong id="statMatches">0</strong></span></div>
       <div class="stat-chip stat-missing"><span>Unterschiede: <strong id="statDiffs">0</strong></span></div>
       <div class="stat-chip stat-filter" id="statFilterChip" hidden><span>Sichtbar: <strong id="statVisible">0</strong></span></div>
     </section>
 
     <section class="comparison-section" id="comparisonSection" hidden>
+      <p class="print-context" id="printContext"></p>
       <div class="table-container">
         <table class="comparison-table" id="comparisonTable">
           <caption class="sr-only">Vergleich der regionalen eCTD-Module-1-Strukturen</caption>
@@ -112,13 +124,13 @@
             <th class="th-topic">Thema / Bedeutung</th>
             <th class="th-region" id="thRegionA">Region A</th>
             <th class="th-region" id="thRegionB">Region B</th>
-            <th class="th-req">Pflicht</th>
-            <th class="th-status">Strukturstatus</th>
+            <th class="th-req">Belegstatus A / B</th>
+            <th class="th-status">Überschriften</th>
           </tr></thead>
           <tbody id="comparisonBody"></tbody>
         </table>
       </div>
-      <div class="no-results" id="noResults" hidden><p>🔍 Keine Abschnitte für diese Filterkriterien gefunden.</p></div>
+      <div class="no-results" id="noResults" hidden><p>Keine Abschnitte für diese Filterkriterien gefunden.</p><button type="button" class="export-btn" id="resetFilters">Filter zurücksetzen</button></div>
     </section>
 
     <section class="empty-state" id="emptyState">
@@ -128,9 +140,18 @@
       <h3>Wählen Sie zwei Regionen aus</h3>
       <p>Sobald beide Regionen ausgewählt sind, erscheint der detaillierte Vergleich der Module-1-Abschnitte.</p>
     </section>
+    <details class="sources-panel" id="sourcesPanel">
+      <summary>Quellen, Prüfstand &amp; Grenzen der Prüfung <span id="reviewDate"></span></summary>
+      <p id="reviewScope"></p>
+      <div class="source-grid" id="sourceGrid"></div>
+      <p>Die Prüfung betrifft die aufgeführten Überschriften und Versionshinweise. Einreichpflicht, XML/DTD/XSD, Lifecycle, Prüfsummen und Dokumentinhalte werden nicht validiert. Planungs-ZIPs verwenden lesbare Ordnernamen und sind keine offiziellen Einreichvorlagen. Sie enthalten alle Abschnitte des Themenfokus für beide Regionen; Such- und Statusfilter gelten für CSV und PDF.</p>
+      <a href="VALIDATION_REPORT.md" download>Prüfbericht herunterladen (.md) ↓</a>
+    </details>
+    <noscript><p class="scope-notice">Für den interaktiven Vergleich muss JavaScript aktiviert sein. Den Quellenbericht können Sie unter <a href="VALIDATION_REPORT.md">Prüfbericht</a> lesen.</p></noscript>
   </main>
 
   <footer class="app-footer"><p id="dataStatus">Datenstand wird geladen …</p></footer>
+  <p class="toast" id="notification" role="status" aria-live="polite" hidden></p>
 
   <script src="core.js"></script>
   <script src="data.js"></script>

@@ -19,15 +19,10 @@
   };
   const dom = {};
 
-  const requirementLabels = {
-    mandatory: 'Pflicht',
-    conditional: 'Bedingt',
-    optional: 'Optional',
-  };
   const statusPresentation = {
-    match: { icon: '✓', label: 'Gleiche Struktur' },
+    match: { icon: '✓', label: 'Nr. & Titel gleich' },
     partial: { icon: '≈', label: 'Abweichend' },
-    missing: { icon: '✕', label: 'Fehlt regional' },
+    missing: { icon: '—', label: 'Keine Zuordnung' },
     context: { icon: '↳', label: 'Gruppierung' },
   };
 
@@ -64,7 +59,8 @@
       'noResults', 'searchInput', 'searchClear', 'filterPills', 'thRegionA',
       'thRegionB', 'statPairs', 'statMatches', 'statDiffs', 'statFilterChip',
       'statVisible', 'toggleExpandAll', 'exportFolders', 'exportPdf',
-      'exportCsv', 'dataStatus', 'bgParticles',
+      'exportCsv', 'dataStatus', 'bgParticles', 'shareComparison', 'resetFilters',
+      'coverageCount', 'sourceGrid', 'reviewDate', 'reviewScope', 'notification', 'printContext',
     ].forEach(id => { dom[id] = byId(id); });
   }
 
@@ -81,7 +77,8 @@
     populateSelectors();
     bindEvents();
     renderDataStatus();
-    createParticles();
+    renderSources();
+    restoreComparison();
   }
 
   function showFatalDataError(errors) {
@@ -110,8 +107,14 @@
   }
 
   function bindEvents() {
-    dom.regionA.addEventListener('change', buildComparison);
-    dom.regionB.addEventListener('change', buildComparison);
+    dom.regionA.addEventListener('change', () => {
+      if (dom.regionA.value === dom.regionB.value) dom.regionB.value = Object.keys(REGIONS).find(key => key !== dom.regionA.value);
+      buildComparison();
+    });
+    dom.regionB.addEventListener('change', () => {
+      if (dom.regionA.value === dom.regionB.value) dom.regionA.value = Object.keys(REGIONS).find(key => key !== dom.regionB.value);
+      buildComparison();
+    });
     dom.submissionType.addEventListener('change', buildComparison);
     dom.swapBtn.addEventListener('click', swapRegions);
     dom.filterPills.addEventListener('click', event => {
@@ -125,11 +128,12 @@
       });
       applyFilters();
     });
-    dom.searchInput.addEventListener('input', debounce(() => {
+    const refreshSearch = debounce(applyFilters, 120);
+    dom.searchInput.addEventListener('input', () => {
       state.search = dom.searchInput.value;
       dom.searchClear.hidden = !state.search;
-      applyFilters();
-    }, 120));
+      refreshSearch();
+    });
     dom.searchClear.addEventListener('click', clearSearch);
     dom.comparisonBody.addEventListener('click', event => {
       const toggle = event.target.closest('[data-tree-toggle]');
@@ -140,6 +144,9 @@
     dom.exportCsv.addEventListener('click', exportCsv);
     dom.exportPdf.addEventListener('click', exportPdf);
     dom.exportFolders.addEventListener('click', exportFolders);
+    dom.shareComparison.addEventListener('click', shareComparison);
+    dom.resetFilters.addEventListener('click', resetFilters);
+    global.addEventListener('popstate', restoreComparison);
     global.addEventListener('afterprint', () => document.body.classList.remove('print-export'));
   }
 
@@ -167,6 +174,8 @@
       setResultsVisible(false);
       return;
     }
+    for (const option of dom.regionA.options) option.disabled = option.value === regionBKey || !option.value;
+    for (const option of dom.regionB.options) option.disabled = option.value === regionAKey || !option.value;
 
     state.model = core.buildComparisonModel(
       ECTD_DATABASE,
@@ -197,6 +206,7 @@
         <div class="spec-region">
           <strong>${escapeHtml(region.flag)} ${escapeHtml(region.specVersion)}</strong>
           <span>${escapeHtml(region.specDate)} · ${escapeHtml(region.validationCriteria)}</span>
+          <small>${escapeHtml(region.reviewNote)}</small>
           ${source ? `<a class="spec-source" href="${escapeHtml(source)}" target="_blank" rel="noopener noreferrer">Offizielle Quelle ↗</a>` : ''}
         </div>`;
     };
@@ -245,7 +255,7 @@
   }
 
   function sectionHtml(section, region) {
-    if (!section) return '<span class="section-missing">—</span>';
+    if (!section) return '<span class="section-missing" title="In dieser redaktionellen Auswahl ist keine Zuordnung erfasst; dies belegt keine Abwesenheit einer regionalen Anforderung.">Keine Zuordnung erfasst</span>';
     const sourceUrl = safeUrl(section.source?.url);
     const documents = (section.documents || []).map(document => {
       const suffix = [document.format, document.note].filter(Boolean).join(' · ');
@@ -266,13 +276,14 @@
       <span class="section-title">${escapeHtml(section.title)}</span>
       ${section.reqCondition ? `<span class="section-condition">${escapeHtml(section.reqCondition)}</span>` : ''}
       ${details}
-      ${sourceUrl ? `<a class="section-source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(region.source.name)}">Quelle ↗</a>` : ''}`;
+      ${sourceUrl ? `<a class="section-source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(section.source.name)} · ${escapeHtml(section.source.locator)}">Quelle ↗</a>` : ''}
+      ${region.structureSource ? `<a class="section-source" href="${escapeHtml(safeUrl(region.structureSource.url))}" target="_blank" rel="noopener noreferrer">EU-Format ↗</a>` : ''}`;
   }
 
   function requirementsHtml(row) {
     if (row.contextOnly) return '<span class="req-context">Kontext</span>';
     const badge = (section, side) => section
-      ? `<span class="req-region"><small>${side}</small><span class="req-badge req-${escapeHtml(section.requirement)}">${escapeHtml(requirementLabels[section.requirement])}</span></span>`
+      ? `<span class="req-region"><small>${side}</small><span class="req-badge evidence-badge" title="Nummer und Titel geprüft; Einreichpflicht nicht bewertet">${escapeHtml(({ 'format-reference': 'Formatreferenz', 'source-checked': 'Quelle geprüft' })[section.reviewStatus] || 'Nicht geprüft')}</span></span>`
       : `<span class="req-region"><small>${side}</small><span class="req-none">—</span></span>`;
     return `<span class="req-pair">${badge(row.a, 'A')}${badge(row.b, 'B')}</span>`;
   }
@@ -313,7 +324,8 @@
     state.model.rows.forEach(row => {
       const element = state.rowElements.get(row.id);
       const exportVisible = result.includedIds.has(row.id);
-      const uiVisible = exportVisible && isExpandedThroughAncestors(row, rowsById);
+      const filtering = state.filter !== 'all' || Boolean(state.search.trim());
+      const uiVisible = exportVisible && (filtering || isExpandedThroughAncestors(row, rowsById));
       element.hidden = !uiVisible;
       element.dataset.exportVisible = String(exportVisible);
       element.classList.toggle('row-filtered-out', !exportVisible);
@@ -331,6 +343,7 @@
     dom.statFilterChip.hidden = !filtering;
     dom.statVisible.textContent = visibleDataRows;
     syncExpansionControls();
+    updateUrl();
   }
 
   function syncExpansionControls() {
@@ -369,13 +382,17 @@
     if (!state.model) return;
     const regionA = REGIONS[dom.regionA.value];
     const regionB = REGIONS[dom.regionB.value];
-    const csv = core.buildComparisonCsv(filteredRowsForExport(), regionA, regionB, DATASET_META);
+    const csv = core.buildComparisonCsv(filteredRowsForExport(), regionA, regionB, {
+      ...DATASET_META, focus: dom.submissionType.value, search: state.search, filter: state.filter,
+    });
     downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }),
       `ectd-${regionA.id}-${regionB.id}-${dom.submissionType.value}.csv`);
   }
 
   function exportPdf() {
     if (!state.model) return;
+    applyFilters();
+    dom.printContext.textContent = `${REGIONS[dom.regionA.value].label} / ${REGIONS[dom.regionB.value].label} · ${SUBMISSION_TYPES[dom.submissionType.value].label} · Filter: ${state.filter} · Suche: ${state.search || '—'} · Datensatz ${DATASET_META.version}`;
     document.body.classList.add('print-export');
     global.print();
   }
@@ -385,27 +402,103 @@
     const paths = regionKeys.flatMap(regionKey =>
       core.buildFolderPaths(ECTD_DATABASE, regionKey, dom.submissionType.value)
     );
-    const bytes = zip.createFolderZip(paths);
+    const readme = [
+      'eCTD MODULE 1 — PLANNING ONLY / NUR ZUR PLANUNG',
+      `Dataset: ${DATASET_META.version}; source review: ${DATASET_META.lastReviewedAt}`,
+      `Focus: ${SUBMISSION_TYPES[dom.submissionType.value].label}`,
+      DATASET_META.scope, DATASET_META.disclaimer,
+      'These are readable planning folders, NOT official eCTD submission paths. No backbone XML, documents, lifecycle operations or validation is provided.',
+      'The ZIP includes both regions and the entire topic focus. Search and status filters apply to CSV/PDF only.',
+      ...regionKeys.map(key => `${REGIONS[key].label}: ${REGIONS[key].source.url} (${REGIONS[key].source.locator})`),
+    ].join('\r\n\r\n');
+    const bytes = zip.createFolderZip(paths, new Date(), { 'README-PLANNING-ONLY.txt': readme });
     downloadBlob(new Blob([bytes], { type: 'application/zip' }),
-      `ectd-folder-${regionKeys.join('-')}-${dom.submissionType.value}.zip`);
+      `ectd-planning-only-${regionKeys.join('-')}-${dom.submissionType.value}.zip`);
+    notify('Planungs-ZIP erstellt. Keine einreichfähige eCTD-Struktur; Hinweise im Quellenbereich beachten.');
   }
 
   function renderDataStatus() {
     if (!dom.dataStatus) return;
-    dom.dataStatus.textContent = `Datensatz ${DATASET_META.version} · geprüft am ${DATASET_META.lastReviewedAt} · ${DATASET_META.disclaimer}`;
+    dom.dataStatus.textContent = `Datensatz ${DATASET_META.version} · Quellenprüfung ${DATASET_META.lastReviewedAt} · ${DATASET_META.disclaimer}`;
   }
 
-  function createParticles() {
-    if (!dom.bgParticles || global.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const fragment = document.createDocumentFragment();
-    for (let index = 0; index < 12; index += 1) {
-      const particle = document.createElement('span');
-      particle.style.setProperty('--particle-x', `${(index * 37) % 100}%`);
-      particle.style.setProperty('--particle-delay', `${-(index % 6)}s`);
-      fragment.append(particle);
-    }
-    dom.bgParticles.append(fragment);
+  function renderSources() {
+    dom.coverageCount.textContent = `${ECTD_DATABASE.reduce((sum, entry) => sum + Object.keys(entry.regions).length, 0)} Abschnittszuordnungen`;
+    dom.reviewDate.textContent = DATASET_META.lastReviewedAt;
+    dom.reviewScope.textContent = DATASET_META.scope;
+    dom.sourceGrid.innerHTML = Object.values(REGIONS).map(region => `
+      <article class="source-card">
+        <h3>${escapeHtml(region.flag)} ${escapeHtml(region.label)}</h3>
+        <strong>${escapeHtml(region.specVersion)}</strong>
+        <p>${escapeHtml(region.source.locator)}</p>
+        <p>${escapeHtml(region.reviewNote)}</p>
+        <a href="${escapeHtml(safeUrl(region.source.url))}" target="_blank" rel="noopener noreferrer">Offizielle Quelle ↗</a>
+        ${region.structureSource ? `<a href="${escapeHtml(safeUrl(region.structureSource.url))}" target="_blank" rel="noopener noreferrer">EU-Strukturreferenz ↗</a>` : ''}
+        ${region.overviewUrl ? `<a href="${escapeHtml(safeUrl(region.overviewUrl))}" target="_blank" rel="noopener noreferrer">Vorgaben &amp; Versionen ↗</a>` : ''}
+        ${region.packageUrl ? `<a href="${escapeHtml(safeUrl(region.packageUrl))}" target="_blank" rel="noopener noreferrer">Geprüftes Paket ↗</a>` : ''}
+      </article>`).join('');
   }
+
+  function restoreComparison() {
+    const params = new URLSearchParams(global.location.search);
+    dom.regionA.value = REGIONS[params.get('a')] ? params.get('a') : 'eu';
+    dom.regionB.value = REGIONS[params.get('b')] ? params.get('b') : 'us';
+    if (dom.regionA.value === dom.regionB.value) dom.regionB.value = Object.keys(REGIONS).find(key => key !== dom.regionA.value);
+    dom.submissionType.value = SUBMISSION_TYPES[params.get('focus')] ? params.get('focus') : 'all';
+    state.filter = ['all', 'match', 'partial', 'missing'].includes(params.get('status')) ? params.get('status') : 'all';
+    state.search = (params.get('q') || '').slice(0, 300);
+    dom.searchInput.value = state.search;
+    dom.searchClear.hidden = !state.search;
+    syncFilterPills();
+    buildComparison();
+  }
+
+  function updateUrl() {
+    if (!state.model || global.location.protocol === 'file:') return;
+    const url = new URL(global.location.href);
+    url.search = '';
+    url.searchParams.set('a', dom.regionA.value);
+    url.searchParams.set('b', dom.regionB.value);
+    if (dom.submissionType.value !== 'all') url.searchParams.set('focus', dom.submissionType.value);
+    if (state.filter !== 'all') url.searchParams.set('status', state.filter);
+    if (state.search.trim()) url.searchParams.set('q', state.search.trim());
+    try { global.history.replaceState(null, '', url); } catch { /* Some file/embedded contexts restrict history. */ }
+  }
+
+  function syncFilterPills() {
+    dom.filterPills.querySelectorAll('[data-filter]').forEach(button => {
+      const active = button.dataset.filter === state.filter;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  function resetFilters() {
+    state.filter = 'all';
+    dom.submissionType.value = 'all';
+    syncFilterPills();
+    clearSearch();
+    buildComparison();
+  }
+
+  let notificationTimer;
+  function notify(message) {
+    global.clearTimeout(notificationTimer);
+    dom.notification.textContent = message;
+    dom.notification.hidden = false;
+    notificationTimer = global.setTimeout(() => { dom.notification.hidden = true; }, 7000);
+  }
+
+  async function shareComparison() {
+    updateUrl();
+    try {
+      await global.navigator.clipboard.writeText(global.location.href);
+      notify('Link zum aktuellen Vergleich kopiert.');
+    } catch {
+      notify('Kopieren nicht verfügbar. Der Vergleich ist in der Browseradresse gespeichert; kopieren Sie diese manuell.');
+    }
+  }
+
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initialize, { once: true });
