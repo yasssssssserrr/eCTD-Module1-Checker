@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>eCTD Module 1 Checker – 7 Regionen</title>
+  <title>eCTD Workspace – EU Dossierprüfung &amp; Module-1-Vergleich</title>
   <meta name="description" content="Vergleichen Sie die eCTD-Module-1-Abschnittsstrukturen zwischen EU, UK, US, CA, CH, AU und JP.">
   <meta name="theme-color" content="#0a0e1a">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a class="skip-link" href="#selectorCard">Zum Vergleich springen</a>
+  <a class="skip-link" href="#referenceWorkspace">Zum Arbeitsbereich springen</a>
 
   <header class="app-header">
     <div class="header-inner">
@@ -26,21 +26,53 @@
           </svg>
         </div>
         <div>
-          <h1 class="logo-title">eCTD Module 1 Checker</h1>
-          <p class="logo-subtitle">Regionale Abschnittsstruktur vergleichen</p>
+          <h1 class="logo-title">eCTD Workspace</h1>
+          <p class="logo-subtitle">EU Dossierprüfung &amp; regionale Referenz</p>
         </div>
       </div>
-      <a class="header-badge" href="#sourcesPanel">Quellen &amp; Prüfstand ↗</a>
+      <a class="header-badge" href="validation/VALIDATION_PLAN.md">Qualifizierung &amp; Quellen ↗</a>
     </div>
   </header>
 
   <main class="main-content">
     <section class="intro" aria-labelledby="introTitle">
       <p class="eyebrow">REGULATORY INTELLIGENCE · MODULE 1</p>
-      <h2 id="introTitle">Sieben Regionen.<br><span>Ein klarer Vergleich.</span></h2>
-      <p>Finden Sie regionale Abschnittsnummern, vergleichen Sie Überschriften und verfolgen Sie jede Angabe bis zur offiziellen Quelle.</p>
+      <h2 id="introTitle">eCTD.<span> Nachvollziehbar geprüft.</span></h2>
+      <p>Technische EU-Vorprüfung auf Ihrem Gerät. Regionale Module-1-Referenzen mit offiziellen Quellen. Klare Ergebnisse und sichtbare Prüfgrenzen.</p>
       <div class="intro-meta"><span>7 Behörden</span><span id="coverageCount">Quellen werden geladen …</span><span>Vollständig im Browser</span></div>
     </section>
+    <nav class="workspace-tabs" role="tablist" aria-label="Arbeitsbereich">
+      <button type="button" id="validationTab" role="tab" aria-selected="false" aria-controls="validatorWorkspace">EU Dossier prüfen</button>
+      <button type="button" id="comparisonTab" class="active" role="tab" aria-selected="true" aria-controls="referenceWorkspace">Module 1 vergleichen</button>
+    </nav>
+    <section id="validatorWorkspace" role="tabpanel" tabindex="-1" aria-labelledby="validationTab" hidden>
+      <div class="qualification-notice"><strong>Qualifizierungskandidat · interne Freigabe ausstehend</strong><p>Dieses Release unterstützt technische Vorprüfungen. Es ist nicht zertifiziert und ersetzt keine vollständige EU-Validierung. Für eine intern validierte Nutzung müssen Ihr Prozesseigner und QA den definierten Einsatzzweck, die Qualifizierung und die Freigabe genehmigen.</p><a href="qualification-package.zip" download>Validierungspaket (.zip) ↓</a> · <a href="eu-validator-v7.0.0.zip" download>Release für lokalen Betrieb (.zip) ↓</a> · <a href="eu-validator-v7.0.0.zip.sha256">Release SHA-256</a></div>
+      <section class="validator-card" aria-labelledby="validatorTitle">
+        <p class="eyebrow">EU · eCTD 3.2.2 · MODULE 1 v3.1.1</p>
+        <h2 id="validatorTitle">Dossier lokal prüfen</h2>
+        <p>Prüft Originaldateien: DTD-Struktur, Prüfsummen, XML-Referenzen, Envelope-Angaben und Dateinamen. Die vollständige EU-Regelabdeckung bleibt sichtbar; PDF- und Lifecycle-Prüfungen sind noch offen.</p>
+        <p id="validatorVersion" class="validator-version"></p>
+        <div class="validator-inputs">
+          <div><label for="dossierFiles">Sequenz- oder Anwendungsordner auswählen</label><input id="dossierFiles" type="file" webkitdirectory multiple aria-describedby="dossierPrivacy dossierInventory"></div>
+          <div><label for="dossierSequence">Zu prüfende Sequenz</label><select id="dossierSequence" class="custom-select" disabled></select></div>
+        </div>
+        <p id="dossierPrivacy" class="privacy-note">Dateien bleiben auf Ihrem Gerät. Kein Upload, keine Speicherung im Browser, keine Übertragung von Dossiernamen in Links. JSON-/HTML-Berichte können vertrauliche Dateinamen enthalten und sind nach Ihren internen Vorgaben aufzubewahren.</p>
+        <p id="dossierInventory">Noch kein Ordner ausgewählt.</p>
+        <div class="validator-actions"><button type="button" id="runDossier" class="primary-button" disabled>Prüfung starten</button><button type="button" id="demoDossier" class="export-btn">Synthetische Demo prüfen</button><button type="button" id="cancelDossier" class="export-btn" hidden>Prüfung abbrechen</button><button type="button" id="clearDossier" class="export-btn">Auswahl löschen</button></div>
+        <p id="dossierProgress" role="status" aria-live="polite">Wählen Sie einen Sequenzordner (z. B. 0000) oder den Anwendungsordner mit mehreren Sequenzen.</p>
+      </section>
+      <section id="dossierResults" class="validator-card" hidden aria-labelledby="dossierConclusion">
+        <h2 id="dossierConclusion"></h2><p id="dossierRunMeta" class="run-meta"></p>
+        <div id="dossierSummary" class="validator-metrics"></div>
+        <p class="result-limits">„Bestanden“ gilt nur für das einzelne Kriterium im geprüften Umfang. Nicht geprüfte Kriterien gelten nicht als bestanden. Die Gesamtbewertung erteilt keine Einreichfreigabe; Engineering-Testergebnisse sind keine QA-Genehmigung.</p>
+        <div id="dossierLocalErrors" role="alert"></div>
+        <div class="validator-actions"><label for="dossierFilter">Ergebnisse anzeigen</label><select id="dossierFilter" class="custom-select"><option value="attention">Abweichungen &amp; offene Prüfungen</option><option value="all">Alle Kriterien</option><option value="fail">Nur Abweichungen</option><option value="not-evaluated">Nicht geprüft</option><option value="pass">Bestanden</option></select><button type="button" id="downloadDossierJson" class="export-btn">JSON-Bericht</button><button type="button" id="downloadDossierHtml" class="export-btn">Druckbericht / PDF</button></div>
+        <div class="table-container"><table class="validation-table"><caption class="sr-only">Einzelergebnisse aller Kriterien aus EU Validation Criteria v8.2</caption><thead><tr><th scope="col">EU-Regel</th><th scope="col">Prüfung</th><th scope="col">Typ</th><th scope="col">Ergebnis</th><th scope="col">Befund / Prüfgrenze</th></tr></thead><tbody id="dossierRules"></tbody></table></div>
+        <p id="dossierDigest" class="report-digest"></p><p class="privacy-note">SHA-256 ist ein Integritätsnachweis für den begleitenden JSON-Inhalt, keine digitale Signatur oder unveränderliche Auditspur. Den heruntergeladenen HTML-Druckbericht können Sie im Browser als PDF drucken.</p>
+      </section>
+      <details class="sources-panel"><summary>Prüfumfang und interne Qualifizierung</summary><p>Die Regelbasis enthält alle 111 IDs aus dem offiziellen EU-v8.2-Katalog. 75 Kriterien sind in diesem Release umgesetzt. Die übrigen Kriterien, darunter PDF-Eigenschaften, historische Lifecycle-Zustände und leere Ordner, werden als nicht geprüft ausgewiesen.</p><p>Unterstützter Eingabeumfang: 20.000 Dateien, 32 GiB Gesamtdaten, 20 MiB pro Backbone-XML. Originaldateien werden ausschließlich gelesen. Browserordnerauswahl erfasst keine leeren Ordner. Historische Dateien belegen allein keine Annahme durch eine Behörde.</p><p>Das Paket enthält Anforderungsspezifikation, Risikobewertung, Test-/Qualifizierungsplan, Rückverfolgbarkeit und Freigabevorlage. Die Ausführung kundenspezifischer PQ-Tests, Schulung und Genehmigung bleiben Aufgaben Ihrer Organisation. GMP-Annex-11-Prinzipien sind eine Designreferenz; die tatsächliche GxP-Anwendbarkeit ist durch QA festzulegen.</p><a href="validation/VALIDATION_PLAN.md">Validierungsplan ↗</a> · <a href="validation/TRACEABILITY.md">Anforderungen &amp; Tests ↗</a> · <a href="validation/OPERATING_PROCEDURE.md">Betriebsanweisung ↗</a> · <a href="https://esubmission.ema.europa.eu/ectd/" target="_blank" rel="noopener noreferrer">Offizielle EU-Quellen ↗</a></details>
+    </section>
+    <div id="referenceWorkspace" role="tabpanel" tabindex="-1" aria-labelledby="comparisonTab">
     <aside class="scope-notice" aria-label="Prüfumfang">
       <strong>Überschriften vergleichen. Anforderungen separat prüfen.</strong>
       <p>Ausgewählte Abschnitte, keine vollständige Dossierprüfung. Themenzuordnung und Themenfokus sind redaktionell. Gleiche Nummern und Titel belegen keine inhaltliche oder rechtliche Gleichwertigkeit. „Keine Zuordnung“ bedeutet, dass dieser Vergleich keine Zuordnung erfasst.</p>
@@ -147,7 +179,8 @@
       <p>Die Prüfung betrifft die aufgeführten Überschriften und Versionshinweise. Einreichpflicht, XML/DTD/XSD, Lifecycle, Prüfsummen und Dokumentinhalte werden nicht validiert. Planungs-ZIPs verwenden lesbare Ordnernamen und sind keine offiziellen Einreichvorlagen. Sie enthalten alle Abschnitte des Themenfokus für beide Regionen; Such- und Statusfilter gelten für CSV und PDF.</p>
       <a href="VALIDATION_REPORT.md" download>Prüfbericht herunterladen (.md) ↓</a>
     </details>
-    <noscript><p class="scope-notice">Für den interaktiven Vergleich muss JavaScript aktiviert sein. Den Quellenbericht können Sie unter <a href="VALIDATION_REPORT.md">Prüfbericht</a> lesen.</p></noscript>
+    </div>
+    <noscript><p class="scope-notice">Für die interaktiven Werkzeuge muss JavaScript aktiviert sein. Lesen Sie den <a href="VALIDATION_REPORT.md">Referenzbericht</a> und den <a href="validation/VALIDATION_PLAN.md">Validierungsplan</a>.</p></noscript>
   </main>
 
   <footer class="app-footer"><p id="dataStatus">Datenstand wird geladen …</p></footer>
@@ -157,5 +190,6 @@
   <script src="data.js"></script>
   <script src="zip.js"></script>
   <script src="app.js"></script>
+  <script type="module" src="validator-ui.js"></script>
 </body>
 </html>

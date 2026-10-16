@@ -419,7 +419,7 @@
 
   function renderDataStatus() {
     if (!dom.dataStatus) return;
-    dom.dataStatus.textContent = `Datensatz ${DATASET_META.version} · Quellenprüfung ${DATASET_META.lastReviewedAt} · ${DATASET_META.disclaimer}`;
+    dom.dataStatus.textContent = `Regionaler Referenzdatensatz ${DATASET_META.version} · Quellenprüfung ${DATASET_META.lastReviewedAt} · EU-Dossierprüfung v7.0.0: Qualifizierungskandidat, interne Freigabe ausstehend.`;
   }
 
   function renderSources() {
@@ -456,7 +456,9 @@
   function updateUrl() {
     if (!state.model || global.location.protocol === 'file:') return;
     const url = new URL(global.location.href);
+    const view = url.searchParams.get('view');
     url.search = '';
+    if (view === 'validate') url.searchParams.set('view', view);
     url.searchParams.set('a', dom.regionA.value);
     url.searchParams.set('b', dom.regionB.value);
     if (dom.submissionType.value !== 'all') url.searchParams.set('focus', dom.submissionType.value);

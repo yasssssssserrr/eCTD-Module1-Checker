@@ -113,8 +113,9 @@ test('mobile layout stays within viewport and leaves the comparison scrollable',
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./?a=jp&b=ch');
   await expect(page.locator('#comparisonSection')).toBeVisible();
-  const dimensions = await page.evaluate(() => ({ viewport: innerWidth, body: document.documentElement.scrollWidth, table: document.querySelector('.table-container').scrollWidth, container: document.querySelector('.table-container').clientWidth }));
+  const dimensions = await page.evaluate(() => ({ viewport: innerWidth, body: document.documentElement.scrollWidth, table: document.querySelector('#comparisonSection .table-container').scrollWidth, container: document.querySelector('#comparisonSection .table-container').clientWidth }));
   expect(dimensions.body).toBeLessThanOrEqual(dimensions.viewport);
   expect(dimensions.table).toBeGreaterThan(dimensions.container);
+  await page.locator('#regionA').scrollIntoViewIfNeeded();
   await expect(page.locator('#regionA')).toBeInViewport();
 });

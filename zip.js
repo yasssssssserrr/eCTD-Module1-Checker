@@ -68,8 +68,8 @@
     const normalizedPaths = normalizePaths(paths);
     const entries = normalizedPaths.map(path => ({ path, data: new Uint8Array(0), directory: true }));
     for (const [path, content] of Object.entries(files)) {
-      if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(path)) throw new Error('Unsafe archive filename.');
-      entries.push({ path, data: encoder.encode(String(content)), directory: false });
+      if (path !== '.nojekyll' && !/^[a-zA-Z0-9][a-zA-Z0-9._-]*(?:\/[a-zA-Z0-9][a-zA-Z0-9._-]*)*$/.test(path)) throw new Error('Unsafe archive filename.');
+      entries.push({ path, data: content instanceof Uint8Array ? content : encoder.encode(String(content)), directory: false });
     }
     const localParts = [];
     const centralParts = [];

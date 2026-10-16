@@ -1,0 +1,789 @@
+{
+    "authority":  "EU",
+    "ectd":  "3.2.2",
+    "module1":  "3.1.1",
+    "criteria":  "8.2",
+    "reviewedAt":  "2026-10-16",
+    "sourceUrl":  "https://esubmission.ema.europa.eu/eumodule1/eCTD%203.2.2%20-%20EU%20M1%20Validation%20Criteria%20v8.2.xlsx",
+    "sourceSha256":  "0f64339496564d89abe9e96376f29805dce2302a56f54ce12858d083315d1fd9",
+    "sheet":  "eCTD Validation Criteria",
+    "rules":  [
+                  {
+                      "id":  "1.1",
+                      "category":  "ICH DTD",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  2
+                  },
+                  {
+                      "id":  "1.2",
+                      "category":  "ICH DTD",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  3
+                  },
+                  {
+                      "id":  "1.3",
+                      "category":  "ICH DTD",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  4
+                  },
+                  {
+                      "id":  "1.4",
+                      "category":  "ICH DTD",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  5
+                  },
+                  {
+                      "id":  "1.5",
+                      "category":  "ICH DTD",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  6
+                  },
+                  {
+                      "id":  "2.1",
+                      "category":  "ICH stylesheet",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  7
+                  },
+                  {
+                      "id":  "2.2",
+                      "category":  "ICH stylesheet",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  8
+                  },
+                  {
+                      "id":  "2.3",
+                      "category":  "ICH stylesheet",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  9
+                  },
+                  {
+                      "id":  "3.1",
+                      "category":  "EU M1 DTD",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  10
+                  },
+                  {
+                      "id":  "3.2",
+                      "category":  "EU M1 DTD",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  11
+                  },
+                  {
+                      "id":  "3.3",
+                      "category":  "EU M1 DTD",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  12
+                  },
+                  {
+                      "id":  "3.4",
+                      "category":  "EU M1 DTD",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  13
+                  },
+                  {
+                      "id":  "3.5",
+                      "category":  "EU M1 DTD",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  14
+                  },
+                  {
+                      "id":  "4.1",
+                      "category":  "EU M1 leaf MOD file",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  15
+                  },
+                  {
+                      "id":  "4.2",
+                      "category":  "EU M1 leaf MOD file",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  16
+                  },
+                  {
+                      "id":  "4.3",
+                      "category":  "EU M1 leaf MOD file",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  17
+                  },
+                  {
+                      "id":  "5.1",
+                      "category":  "EU M1 envelope MOD file",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  18
+                  },
+                  {
+                      "id":  "5.2",
+                      "category":  "EU M1 envelope MOD file",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  19
+                  },
+                  {
+                      "id":  "5.3",
+                      "category":  "EU M1 envelope MOD file",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  20
+                  },
+                  {
+                      "id":  "6.1",
+                      "category":  "EU M1 stylesheet",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  21
+                  },
+                  {
+                      "id":  "6.2",
+                      "category":  "EU M1 stylesheet",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  22
+                  },
+                  {
+                      "id":  "6.3",
+                      "category":  "EU M1 stylesheet",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  23
+                  },
+                  {
+                      "id":  "7.1",
+                      "category":  "Index XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  24
+                  },
+                  {
+                      "id":  "7.2",
+                      "category":  "Index XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  25
+                  },
+                  {
+                      "id":  "7.3",
+                      "category":  "Index XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  26
+                  },
+                  {
+                      "id":  "7.4",
+                      "category":  "Index XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  27
+                  },
+                  {
+                      "id":  "7.5",
+                      "category":  "Index XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  28
+                  },
+                  {
+                      "id":  "7.6",
+                      "category":  "Index XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  29
+                  },
+                  {
+                      "id":  "8.1",
+                      "category":  "Index MD5 txt",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  30
+                  },
+                  {
+                      "id":  "8.2",
+                      "category":  "Index MD5 txt",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  31
+                  },
+                  {
+                      "id":  "8.3",
+                      "category":  "Index MD5 txt",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  32
+                  },
+                  {
+                      "id":  "9.1",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  33
+                  },
+                  {
+                      "id":  "9.2",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  34
+                  },
+                  {
+                      "id":  "9.3",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  35
+                  },
+                  {
+                      "id":  "9.4",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  36
+                  },
+                  {
+                      "id":  "9.5",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  37
+                  },
+                  {
+                      "id":  "9.6",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  38
+                  },
+                  {
+                      "id":  "9.7",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  39
+                  },
+                  {
+                      "id":  "9.8",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  40
+                  },
+                  {
+                      "id":  "9.9",
+                      "category":  "EU regional XML",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  41
+                  },
+                  {
+                      "id":  "10.1",
+                      "category":  "Submission Structure",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  42
+                  },
+                  {
+                      "id":  "11.1",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  43
+                  },
+                  {
+                      "id":  "11.2",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  44
+                  },
+                  {
+                      "id":  "11.3",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  45
+                  },
+                  {
+                      "id":  "11.4",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  46
+                  },
+                  {
+                      "id":  "11.5",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  47
+                  },
+                  {
+                      "id":  "11.6",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  48
+                  },
+                  {
+                      "id":  "11.7",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  49
+                  },
+                  {
+                      "id":  "11.8",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  50
+                  },
+                  {
+                      "id":  "11.9",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  51
+                  },
+                  {
+                      "id":  "11.10",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  52
+                  },
+                  {
+                      "id":  "11.11",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  53
+                  },
+                  {
+                      "id":  "11.12",
+                      "category":  "leaf attributes",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  54
+                  },
+                  {
+                      "id":  "11.BP1",
+                      "category":  "leaf attributes",
+                      "type":  "BP",
+                      "historyRequired":  true,
+                      "sourceRow":  55
+                  },
+                  {
+                      "id":  "11.BP2",
+                      "category":  "leaf attributes",
+                      "type":  "BP",
+                      "historyRequired":  true,
+                      "sourceRow":  56
+                  },
+                  {
+                      "id":  "11.BP3",
+                      "category":  "ICH Attributes",
+                      "type":  "BP",
+                      "historyRequired":  true,
+                      "sourceRow":  57
+                  },
+                  {
+                      "id":  "12.1",
+                      "category":  "Node extensions",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  58
+                  },
+                  {
+                      "id":  "13.1",
+                      "category":  "Sequence number",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  59
+                  },
+                  {
+                      "id":  "13.2",
+                      "category":  "Sequence number",
+                      "type":  "P/F",
+                      "historyRequired":  true,
+                      "sourceRow":  60
+                  },
+                  {
+                      "id":  "13.3",
+                      "category":  "Sequence number",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  61
+                  },
+                  {
+                      "id":  "14.1",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  62
+                  },
+                  {
+                      "id":  "14.2",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  63
+                  },
+                  {
+                      "id":  "14.3",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  64
+                  },
+                  {
+                      "id":  "14.4",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  65
+                  },
+                  {
+                      "id":  "14.5",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  66
+                  },
+                  {
+                      "id":  "14.6",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  67
+                  },
+                  {
+                      "id":  "14.7",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  68
+                  },
+                  {
+                      "id":  "14.8",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  69
+                  },
+                  {
+                      "id":  "14.9",
+                      "category":  "Envelope Attributes",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  70
+                  },
+                  {
+                      "id":  "14.BP3",
+                      "category":  "Envelope Attributes",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  71
+                  },
+                  {
+                      "id":  "14.BP4",
+                      "category":  "Envelope Attributes",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  72
+                  },
+                  {
+                      "id":  "14.BP5",
+                      "category":  "Envelope Attributes",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  73
+                  },
+                  {
+                      "id":  "14.BP6",
+                      "category":  "Envelope Attributes",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  74
+                  },
+                  {
+                      "id":  "14.BP7",
+                      "category":  "Envelope Attributes",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  75
+                  },
+                  {
+                      "id":  "14.BP8",
+                      "category":  "Envelope Attributes",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  76
+                  },
+                  {
+                      "id":  "15.BP1.1",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  77
+                  },
+                  {
+                      "id":  "15.BP2.1",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  78
+                  },
+                  {
+                      "id":  "15.3",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  79
+                  },
+                  {
+                      "id":  "15.4",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  80
+                  },
+                  {
+                      "id":  "15.5",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  81
+                  },
+                  {
+                      "id":  "15.6",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  82
+                  },
+                  {
+                      "id":  "15.7",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  83
+                  },
+                  {
+                      "id":  "15.8",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  84
+                  },
+                  {
+                      "id":  "15.9",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  85
+                  },
+                  {
+                      "id":  "15.10",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  86
+                  },
+                  {
+                      "id":  "15.11",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  87
+                  },
+                  {
+                      "id":  "15.12",
+                      "category":  "Files/Folders",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  88
+                  },
+                  {
+                      "id":  "15.BP1",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  89
+                  },
+                  {
+                      "id":  "15.BP2",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  90
+                  },
+                  {
+                      "id":  "15.BP3",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  91
+                  },
+                  {
+                      "id":  "15.BP4",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  92
+                  },
+                  {
+                      "id":  "15.BP5",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  93
+                  },
+                  {
+                      "id":  "15.BP6",
+                      "category":  "Files/Folders",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  94
+                  },
+                  {
+                      "id":  "16.1",
+                      "category":  "PDF Files",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  95
+                  },
+                  {
+                      "id":  "16.2",
+                      "category":  "PDF Files",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  96
+                  },
+                  {
+                      "id":  "16.3",
+                      "category":  "PDF Files",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  97
+                  },
+                  {
+                      "id":  "16.4",
+                      "category":  "PDF Files",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  98
+                  },
+                  {
+                      "id":  "16.5",
+                      "category":  "PDF Files",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  99
+                  },
+                  {
+                      "id":  "16.6",
+                      "category":  "PDF Files",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  100
+                  },
+                  {
+                      "id":  "16.7",
+                      "category":  "PDF Files",
+                      "type":  "P/F",
+                      "historyRequired":  false,
+                      "sourceRow":  101
+                  },
+                  {
+                      "id":  "16.BP1",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  102
+                  },
+                  {
+                      "id":  "16.BP2",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  103
+                  },
+                  {
+                      "id":  "16.BP3",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  true,
+                      "sourceRow":  104
+                  },
+                  {
+                      "id":  "16.BP4",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  105
+                  },
+                  {
+                      "id":  "16.BP5",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  106
+                  },
+                  {
+                      "id":  "16.BP6",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  107
+                  },
+                  {
+                      "id":  "16.BP7",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  108
+                  },
+                  {
+                      "id":  "16.BP8",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  109
+                  },
+                  {
+                      "id":  "16.BP9",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  110
+                  },
+                  {
+                      "id":  "16.BP10",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  111
+                  },
+                  {
+                      "id":  "16.BP11",
+                      "category":  "PDF Files",
+                      "type":  "BP",
+                      "historyRequired":  false,
+                      "sourceRow":  112
+                  }
+              ]
+}

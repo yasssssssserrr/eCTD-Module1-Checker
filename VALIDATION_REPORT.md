@@ -1,5 +1,7 @@
 # eCTD Module 1 reference review
 
+This report concerns the regional heading-reference component. Software 7.0.0 additionally includes an EU technical preflight qualification candidate, documented separately in [the internal validation plan](validation/VALIDATION_PLAN.md). Its 75 implemented criteria and 36 open criteria do not constitute a certified or fully qualified dossier validator.
+
 Review date: **2026-10-16**. Dataset: **2026.10.16**. Application: **6.0.0**.
 
 ## Scope and interpretation

@@ -1,23 +1,34 @@
-# eCTD Module 1 Checker
+# eCTD Workspace
 
-[Open the website](https://yasssssssserrr.github.io/eCTD-Module1-Checker/) · [Source review and corrections](VALIDATION_REPORT.md)
+[EU dossier preflight](https://yasssssssserrr.github.io/eCTD-Module1-Checker/?view=validate) · [Regional reference](https://yasssssssserrr.github.io/eCTD-Module1-Checker/) · [Internal validation plan](validation/VALIDATION_PLAN.md)
 
-A static, browser-local reference for comparing selected Module 1 headings across EU, UK, US, Canada, Switzerland, Australia and Japan. The interface is in German and retains the authorities' English heading terminology.
+Software **7.0.0** is an **internal qualification candidate**. Organizational approval is pending. It is not certified and does not perform complete EU dossier validation.
 
-## What it does
+## EU dossier preflight
 
-- Compares selected regional numbers and headings, with official evidence and a dated review record.
-- Distinguishes direct source checks from the UK's EU-format reference.
-- Filters by editorial topic, search or heading status; keeps context parents visible.
-- Saves the current comparison in a shareable URL.
-- Exports filtered CSV, a printable PDF view, and a planning ZIP with an embedded scope notice.
-- Runs without third-party runtime dependencies, external fonts, uploads or analytics. Search terms appear in share URLs: avoid entering confidential information when sharing a link.
+Select a local sequence/application folder and the intended sequence. The app reads original bytes on your device in a Web Worker. No dossier upload, browser persistence or dossier names in URLs are implemented.
 
-This is a **reference aid**, not an authority validator. Requiredness and procedure applicability are not assessed. An unmapped cell does not establish the absence of a regional requirement. Planning folders are not official eCTD submission paths. See the [review scope](VALIDATION_REPORT.md).
+- Maps **75 of 111** official EU v8.2 criteria; every remaining ID is explicitly not evaluated.
+- Checks trusted ICH/EU DTD structure, original utility hashes, index/leaf MD5, safe relative references, selected envelope/UUID/sequence/leaf rules, and selected filesystem/tracking criteria.
+- Distinguishes P/F failures, BP warnings, not-applicable conditions and unavailable/unimplemented checks.
+- Exports JSON and printable HTML with run IDs, build/rulepack/source identifiers, selected-file and referenced-history inventories, MD5/SHA-256 and a report integrity digest.
+- Provides a versioned static release ZIP, SHA-256 sidecar, per-asset manifest, qualification documents and automated engineering evidence.
 
-## Run and verify
+PDF criteria, historical lifecycle state, authority receipt state, empty-directory detection and other gaps remain outside the implemented scope. A clean partial scope never becomes a full-EU pass. Reports are unsigned evidence, not an immutable audit trail or an electronic release signature.
 
-Use Node.js 24 or later. The application itself can also be opened directly from `index.html`.
+## Internal validation and controlled operation
+
+The [validation plan](validation/VALIDATION_PLAN.md), [IQ/OQ/PQ execution protocol](validation/QUALIFICATION_PROTOCOL.md), [requirements](validation/USER_REQUIREMENTS.md), [risks](validation/RISK_ASSESSMENT.md), [traceability](validation/TRACEABILITY.md), [operating procedure](validation/OPERATING_PROCEDURE.md) and [release-approval template](validation/RELEASE_APPROVAL.md) are reviewable drafts. Supplied test results are engineering evidence. Your organization must approve intended use, qualify its frozen installation through IQ/OQ/PQ using representative dossiers, accept deviations/residual risks and sign the release.
+
+Use the downloadable frozen ZIP and independently retained hash for controlled installation; a mutable public website URL alone is not a qualified installation. Serve the extracted files through your approved HTTPS or loopback server. Chromium is the supplied browser test baseline; other environments require qualification.
+
+## Regional reference
+
+The separate German-language reference compares selected Module 1 headings across EU, UK, US, Canada, Switzerland, Australia and Japan. It includes source evidence, editorial topic/search/status filters, shareable comparison URLs, CSV/PDF and planning ZIP exports. Heading matches do not establish legal/content equivalence; requiredness is not assessed. See [the reference-data review](VALIDATION_REPORT.md).
+
+## Develop and test
+
+Use Node.js 24 or later:
 
 ```sh
 npm ci
@@ -28,24 +39,14 @@ npm run test:browser
 npm start
 ```
 
-Local preview: `http://127.0.0.1:4173`. The preview server serves only `dist/` and binds to loopback. Windows PowerShell users with script execution restrictions can use `npm.cmd` and `npx.cmd`.
+Local preview: `http://127.0.0.1:4173/?view=validate`. On restricted Windows PowerShell use `npm.cmd` and `npx.cmd`. The reference can run from `index.html`; the validator needs the built assets and HTTP(S) for module workers.
 
-## Hosting on GitHub Pages
+`npm run check` runs reference regressions and the EU engine cases, generating engineering execution evidence under `.artifacts/qualification/`. Browser tests cover selection, actual WASM DTD execution, corrupt data, XML safety, local-only processing, cancellation, exports, artifact hashes and mobile behavior. Build dependencies and runtime libraries are pinned; licences are included in the published build.
 
-The existing repository uses the `master` branch. The Pages workflow runs syntax/data tests, builds the static allowlist, runs Chromium interaction tests, and deploys `dist/` only after success. In repository **Settings → Pages**, the source is **GitHub Actions**. Push changes to `master` to publish; pull requests run validation without deploying. All asset paths are relative, so project-path hosting works.
+Verify a downloaded JSON report with `node scripts/verify-report.mjs report.json`. A matching digest is not proof of authenticity or approval.
 
-Other static hosts can serve `dist/` after `npm run build`. There is no backend, database, API key or production Node server.
+## Hosting and release
 
-## Project files
+GitHub Pages publishes `dist/` from the `master` workflow after software and browser tests pass. Relative assets support project-path hosting. Pull requests validate without deployment. The build allowlist excludes test fixtures and dossier input.
 
-| File | Purpose |
-| --- | --- |
-| `data.js` | Selected source-reviewed headings, regional versions and evidence |
-| `core.js` | Data validation, hierarchy, comparison, filtering and CSV generation |
-| `app.js` | Accessible UI interactions, share state and downloads |
-| `zip.js` | Stored ZIP writer with UTF-8 filenames, CRC and embedded text support |
-| `VALIDATION_REPORT.md` | Review sources, substantive corrections and limits |
-| `tests/` | Domain and browser regression tests |
-| `scripts/build.js` | Publishes an explicit allowlist to `dist/` |
-
-Dataset version: **2026.10.16**. Review dates describe the documented source check, not regulatory certification or automatic monitoring.
+The official rule catalogue records workbook SHA-256 and worksheet rows. Original authority utilities are tracked byte-for-byte under `validation/vendor/` and must not undergo newline normalization. `scripts/import-eu-sources.ps1` is a controlled source-import helper; builds do not fetch changing authority specifications. Any update needs impact assessment and relevant requalification.

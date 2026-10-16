@@ -1,16 +1,23 @@
 {
   "name": "ectd-module-1-checker",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "private": true,
-  "description": "Static browser tool for comparing regional eCTD Module 1 structures.",
+  "description": "Browser-local EU eCTD technical preflight and regional Module 1 reference; internal qualification candidate.",
   "scripts": {
     "test": "node tests/run-tests.js",
     "start": "node scripts/serve.js",
     "build": "node scripts/build.js",
     "test:browser": "playwright test",
-    "check": "node --check core.js && node --check data.js && node --check zip.js && node --check app.js && node tests/run-tests.js"
+    "test:validator": "node tests/validator/run-validation-tests.mjs",
+    "check": "node --check core.js && node --check data.js && node --check zip.js && node --check app.js && node tests/run-tests.js && node tests/validator/run-validation-tests.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.1"
+    "@playwright/test": "1.64.1",
+    "esbuild": "0.28.2"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "@xmldom/xmldom": "0.9.12",
+    "libxml2-wasm": "0.7.2"
   }
 }
