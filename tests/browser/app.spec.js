@@ -60,6 +60,45 @@ test('authority placement restrictions appear beside the heading', async ({ page
   await expect(page.locator('[data-row-id="fee-forms"]')).toContainText('keine Dokumente hier ablegen');
 });
 
+test('theme switch overrides the device setting and remembers the choice', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ colorScheme: 'dark', baseURL });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const background = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await page.goto('./');
+  const toggle = page.locator('#themeToggle');
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveAttribute('aria-label', 'Zum hellen Design wechseln');
+  const dark = await background();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-label', 'Zum dunklen Design wechseln');
+  const light = await background();
+  expect(light).not.toBe(dark);
+  expect(await page.locator('.logo-title').evaluate(element => getComputedStyle(element).color)).not.toBe(light);
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  expect(await background()).toBe(light);
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(['ectd-theme']);
+  await page.locator('#themeToggle').click();
+  expect(await background()).toBe(dark);
+  await page.emulateMedia({ media: 'print' });
+  expect(await background()).not.toBe(dark);
+  expect(errors).toEqual([]);
+  await context.close();
+});
+
+test('theme switch follows a light device by default and fits on a phone', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ colorScheme: 'light', baseURL, viewport: { width: 375, height: 700 } });
+  const page = await context.newPage();
+  await page.goto('./');
+  await expect(page.locator('#themeToggle')).toHaveAttribute('aria-label', 'Zum dunklen Design wechseln');
+  await expect(page.locator('#themeToggle')).toBeInViewport();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await page.evaluate(() => localStorage.length)).toBe(0);
+  await context.close();
+});
+
 test('keeps regions distinct and swaps their selected values', async ({ page }) => {
   await page.goto('./?a=ca&b=au');
   await expect(page.locator('#regionA option[value="au"]')).toBeDisabled();
