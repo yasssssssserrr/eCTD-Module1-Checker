@@ -123,6 +123,12 @@ test('theme switch follows a light device by default and fits on a phone', async
   await expect(page.locator('#themeToggle')).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(await page.evaluate(() => localStorage.length)).toBe(0);
+  await page.addStyleTag({ content: '.app-header * { letter-spacing:.08em; }' });
+  for (const width of [320, 360, 375, 390]) {
+    await page.setViewportSize({ width, height: 700 });
+    await expect(page.locator('#themeToggle')).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `header overflows at ${width}px with a wide font`).toBe(true);
+  }
   await context.close();
 });
 
