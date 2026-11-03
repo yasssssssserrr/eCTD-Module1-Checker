@@ -4,7 +4,6 @@
   const KEY = 'ectd-theme';
   const COLORS = { light: '#ffffff', dark: '#0e1626' };
   const root = global.document.documentElement;
-  const systemDark = global.matchMedia('(prefers-color-scheme: dark)');
 
   function savedTheme() {
     try {
@@ -17,7 +16,7 @@
     try { global.localStorage.setItem(KEY, theme); } catch { /* The switch still works until the page reloads. */ }
   }
 
-  const currentTheme = () => root.dataset.theme || (systemDark.matches ? 'dark' : 'light');
+  const currentTheme = () => root.dataset.theme || 'light';
 
   function applyTheme(theme) {
     root.classList.add('theme-changing');
@@ -50,6 +49,5 @@
       saveTheme(next);
       renderSwitch(button);
     });
-    systemDark.addEventListener('change', () => renderSwitch(button));
   });
 })(globalThis);

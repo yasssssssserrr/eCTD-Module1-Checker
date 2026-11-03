@@ -5,7 +5,7 @@ Reviewed output of the [UI/UX Pro Max skill](https://github.com/nextlevelbuilder
 ## Accepted
 
 - **Style:** Minimalism & Swiss. Grid-based, dense, functional, without decorative effects.
-- **Palette:** navy primary `#1E3A5F`, blue links and focus, slate neutrals. The device setting chooses the first theme, and the header switch overrides it. The choice is stored as `ectd-theme`. Print always uses the light values.
+- **Palette:** navy primary `#1E3A5F`, blue links and focus, slate neutrals. The site opens in light mode, and the header switch changes to dark. The choice is stored as `ectd-theme`. Print always uses the light values.
 - **Status colors:** green for match, amber for partial, slate for no mapping. A status always carries its text label, never color alone.
 - **Contrast:** at least 4.5:1 for text and 3:1 for control boundaries, in both themes.
 - **Type:** 15px body, 13px tables and notes, 12px minimum.

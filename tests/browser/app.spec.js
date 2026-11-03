@@ -60,7 +60,7 @@ test('authority placement restrictions appear beside the heading', async ({ page
   await expect(page.locator('[data-row-id="fee-forms"]')).toContainText('keine Dokumente hier ablegen');
 });
 
-test('theme switch overrides the device setting and remembers the choice', async ({ browser, baseURL }) => {
+test('site opens in light mode on a dark device and the switch remembers the choice', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ colorScheme: 'dark', baseURL });
   const page = await context.newPage();
   const errors = [];
@@ -69,24 +69,28 @@ test('theme switch overrides the device setting and remembers the choice', async
   await page.goto('./');
   const toggle = page.locator('#themeToggle');
   await expect(toggle).toBeVisible();
-  await expect(toggle).toHaveAttribute('aria-label', 'Zum hellen Design wechseln');
-  const dark = await background();
-  await expect(toggle).toContainText('Hell');
-  await toggle.click();
   await expect(toggle).toHaveAttribute('aria-label', 'Zum dunklen Design wechseln');
   await expect(toggle).toContainText('Dunkel');
-  await expect(page.locator('html')).not.toHaveClass(/theme-changing/);
   const light = await background();
-  expect(light).not.toBe(dark);
-  expect(await page.locator('.logo-title').evaluate(element => getComputedStyle(element).color)).not.toBe(light);
+  expect(light).toBe('rgb(248, 250, 252)');
+  expect(await page.evaluate(() => localStorage.length)).toBe(0);
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-label', 'Zum hellen Design wechseln');
+  await expect(toggle).toContainText('Hell');
+  await expect(page.locator('html')).not.toHaveClass(/theme-changing/);
+  const dark = await background();
+  expect(dark).not.toBe(light);
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  expect(await background()).toBe(light);
-  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(['ectd-theme']);
-  await page.locator('#themeToggle').click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   expect(await background()).toBe(dark);
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(['ectd-theme']);
   await page.emulateMedia({ media: 'print' });
   expect(await background()).not.toBe(dark);
+  await page.emulateMedia({ media: 'screen' });
+  await page.locator('#themeToggle').click();
+  expect(await background()).toBe(light);
+  await page.reload();
+  expect(await background()).toBe(light);
   expect(errors).toEqual([]);
   await context.close();
 });
@@ -101,21 +105,24 @@ test('theme switch stays clearly visible in both themes and all assets use versi
     const icon = [...button.querySelectorAll('svg')].find(svg => getComputedStyle(svg).display !== 'none');
     return { icon: ratio(getComputedStyle(icon).color, style.backgroundColor), border: ratio(style.borderTopColor, getComputedStyle(document.querySelector('.app-header')).backgroundColor), label: ratio(style.color, style.backgroundColor) };
   };
-  for (const colorScheme of ['light', 'dark']) {
-    const context = await browser.newContext({ colorScheme, baseURL });
-    const page = await context.newPage();
-    await page.goto('./');
-    await expect(page.locator('#themeToggle')).toBeVisible();
+  const context = await browser.newContext({ baseURL });
+  const page = await context.newPage();
+  await page.goto('./');
+  await expect(page.locator('#themeToggle')).toBeVisible();
+  for (const theme of ['light', 'dark']) {
+    if (theme === 'dark') await page.locator('#themeToggle').click();
+    await expect(page.locator('html')).not.toHaveClass(/theme-changing/);
+    await page.waitForTimeout(250);
     const result = await page.evaluate(contrast);
     expect(result.icon).toBeGreaterThanOrEqual(3);
     expect(result.border).toBeGreaterThanOrEqual(3);
     expect(result.label).toBeGreaterThanOrEqual(4.5);
-    expect(await page.evaluate(() => [...document.querySelectorAll('link[rel=stylesheet], script[src]')].every(element => /\?v=[0-9a-f]{12}$/.test(element.getAttribute('href') || element.getAttribute('src'))))).toBe(true);
-    await context.close();
   }
+  expect(await page.evaluate(() => [...document.querySelectorAll('link[rel=stylesheet], script[src]')].every(element => /\?v=[0-9a-f]{12}$/.test(element.getAttribute('href') || element.getAttribute('src'))))).toBe(true);
+  await context.close();
 });
 
-test('theme switch follows a light device by default and fits on a phone', async ({ browser, baseURL }) => {
+test('theme switch starts in light mode and fits on a phone', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ colorScheme: 'light', baseURL, viewport: { width: 375, height: 700 } });
   const page = await context.newPage();
   await page.goto('./');
