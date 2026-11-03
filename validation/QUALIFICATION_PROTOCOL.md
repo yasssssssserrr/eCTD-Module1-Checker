@@ -1,6 +1,6 @@
 # QP-EU-001 — IQ/OQ/PQ execution record
 
-Version 1.0 · Candidate software 7.0.0 · 2026-10-16 · **DRAFT — NOT EXECUTED OR APPROVED**
+Version 1.1 · Candidate software 7.1.0 · 2026-11-03 · **DRAFT — NOT EXECUTED OR APPROVED**
 
 Use with `VALIDATION_PLAN.md`, `USER_REQUIREMENTS.md`, `RISK_ASSESSMENT.md` and `TRACEABILITY.md`. Complete organization-specific fixtures, scope, branch coverage and expected results before protocol approval. Supplied engineering executions are supporting evidence; no result below has been executed or signed by the organization.
 
@@ -31,7 +31,7 @@ For each case retain steps performed, fixture IDs/hashes, actual result, evidenc
 
 | ID | Procedure | Expected result | Actual / evidence / tester / date / deviation |
 | --- | --- | --- | --- |
-| OQ-01 | Reconcile the pinned source hashes and all official rule IDs/types with the approved workbook. | 111 unique IDs, 75 implemented and 36 unimplemented; source rows and P/F versus BP preserved. | Not executed |
+| OQ-01 | Reconcile the pinned source hashes and all official rule IDs/types with the approved workbook. | 111 unique IDs, 93 implemented and 18 unimplemented; source rows and P/F versus BP preserved. | Not executed |
 | OQ-02 | Execute the supplied reference, engine and browser suites from the frozen source, retaining full logs and generated execution JSON. Review URS traceability independently. | All expected checks succeed; source hashes match the tested checkout. Uncovered branches are identified and supplemental cases approved/executed. | Not executed |
 | OQ-03 | Run an independently reviewed valid technical fixture. Alter a trusted DTD, XML structure, index MD5, document bytes, required reference and duplicate leaf ID in separate controlled copies. | Supported positive checks pass; each corruption produces its independently specified failure or unavailable result. Altered DTD is never executed or reported as a valid baseline. | Not executed |
 | OQ-04 | Test each implemented rule and applicability branch using a preapproved matrix: CP, MRP/DCP, NP, CEP; initial/follow-up; grouping/worksharing; leaf operations; names, paths, countries and thresholds. | Each expected pass/fail/not-applicable/not-evaluated result agrees with the approved interpretation and independent reference. Attach the completed rule-to-case matrix; supplied engineering cases alone do not establish exhaustive coverage. | Not executed |
@@ -39,17 +39,18 @@ For each case retain steps performed, fixture IDs/hashes, actual result, evidenc
 | OQ-06 | Test XML entities, unsafe paths, case collisions, unsupported encoding, unreadable data, cancelled run, unavailable worker and configured capacity boundaries. | No external entity resolution or unsafe path use; stopped/unsupported runs yield no completed pass; no stale report survives cancellation/clear. Record qualified performance limits. | Not executed |
 | OQ-07 | Export JSON/HTML; independently verify JSON digest; alter a JSON field without updating its stored digest; inspect printable output. | Original digest verifies, altered payload fails comparison, reports retain scope, inventories and build/run IDs; report digest is not presented as a signature. | Not executed |
 | OQ-08 | Review results for a fixture with no supported-scope failures and one with BP-only warnings. | Neither produces a complete-EU, certified or organizationally approved conclusion; all gaps visible; BP warnings separate from P/F. | Not executed |
+| OQ-09 | Run each 16.x rule against approved real and constructed PDFs: versions, password, certificate and permission security, damaged files, PLM and interactive eAFs, signed files, links, bookmarks, Fast Web View and document properties. | Each result agrees with the approved reference validator or the documented interpretation in `VALIDATION_PLAN.md`; differences are recorded as deviations. | Not executed |
 
 ## Performance qualification
 
 | ID | Procedure | Expected result | Actual / evidence / tester / date / deviation |
 | --- | --- | --- | --- |
-| PQ-01 | Trained users run approved representative initial/follow-up dossiers for every intended procedure and document class; compare supported findings with the approved independent validator. | Expected outcomes agree; every discrepancy investigated; PDF/lifecycle and other omitted checks supplied by named independent controls. | Not executed |
+| PQ-01 | Trained users run approved representative initial/follow-up dossiers for every intended procedure and document class; compare supported findings with the approved independent validator. | Expected outcomes agree; every discrepancy investigated; lifecycle and other omitted checks supplied by named independent controls. | Not executed |
 | PQ-02 | Exercise representative largest inputs, earlier-file reuse, interrupted operation and repeat runs on the actual approved workstation/host. | Measured resource/time limits acceptable; no unexplained result differences, silent omissions, false passes or confidential transmission. | Not executed |
 | PQ-03 | Complete an end-to-end review, evidence retention, exception handling and independent submission-release rehearsal under the approved SOP. | Users trained, records retrievable, reviewer decisions traceable, independent release controls effective. | Not executed |
 
 ## Completion record
 
-List evidence IDs, executed/passed/failed/not-executed counts, deviations and coverage gaps. QA must approve all deviations and residual risks before the intended supplementary operational use. Complete `RELEASE_APPROVAL.md` with authorized signatures. This protocol does not grant authority certification or make the 36 unimplemented criteria evaluated.
+List evidence IDs, executed/passed/failed/not-executed counts, deviations and coverage gaps. QA must approve all deviations and residual risks before the intended supplementary operational use. Complete `RELEASE_APPROVAL.md` with authorized signatures. This protocol does not grant authority certification or make the 18 unimplemented criteria evaluated.
 
 **Execution summary:** Not executed. **Qualification/release decision:** Pending organizational approval.

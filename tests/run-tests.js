@@ -185,6 +185,23 @@ test('all displayed headings carry review evidence without invented requiredness
   }
 });
 
+test('Australian dataset covers all 65 v3.2 heading elements', () => {
+  const numbers = data.ECTD_DATABASE.flatMap(entry => entry.regions.au ? [entry.regions.au.num] : []);
+  assert.equal(numbers.length, 65);
+  assert.equal(new Set(numbers).size, 65);
+});
+
+test('official unnumbered EU sections are allowed only when declared', () => {
+  const section = id => data.ECTD_DATABASE.find(entry => entry.id === id).regions.eu;
+  assert.equal(section('responses-eu').num, '');
+  assert.equal(section('additional-data-eu').title, 'Additional Data');
+  assert.ok(core.buildFolderPaths(data.ECTD_DATABASE, 'eu', 'all').includes('m1/eu/additional-data/'));
+  const original = data.ECTD_DATABASE.find(entry => entry.id === 'braille');
+  const invalid = { ...original, id: 'missing-number', parentId: null, regions: { eu: { ...original.regions.eu, num: '', title: 'Missing number' } } };
+  const result = core.validateDatabase([...data.ECTD_DATABASE, invalid], data.REGIONS, data.SUBMISSION_TYPES);
+  assert.ok(result.errors.some(error => error.includes('missing-number/eu requires num and title')));
+});
+
 test('Canadian cover letter, forms and lifecycle table use their schema positions', () => {
   const section = id => data.ECTD_DATABASE.find(entry => entry.id === id).regions.ca;
   assert.equal(section('cover-letter').num, '1.0.1');

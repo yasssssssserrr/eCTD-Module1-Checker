@@ -92,7 +92,7 @@
           errors.push(`${entry.id} uses unknown region ${regionKey}.`);
           return;
         }
-        if (!section.num || !section.title) {
+        if ((!section.num && !section.unnumbered) || !section.title) {
           errors.push(`${entry.id}/${regionKey} requires num and title.`);
         }
         if (!VALID_REQUIREMENTS.has(section.requirement)) {
@@ -107,8 +107,8 @@
           }
         });
 
-        if (!/^1(?:\.\d+)+$/.test(section.num)) errors.push(`${entry.id}/${regionKey} has invalid section number ${section.num}.`);
-        const signature = section.num;
+        if (!section.unnumbered && !/^1(?:\.\d+)+$/.test(section.num)) errors.push(`${entry.id}/${regionKey} has invalid section number ${section.num}.`);
+        const signature = section.num || section.title;
         const previous = regionNumbers[regionKey].get(signature);
         if (previous) {
           errors.push(`Duplicate ${regionKey} section ${signature}: ${previous} and ${entry.id}.`);
@@ -291,9 +291,9 @@
   }
 
   function folderSegment(section) {
-    const number = String(section.num).replace(/[^a-zA-Z0-9]+/g, '') || 'section';
+    const number = String(section.num).replace(/[^a-zA-Z0-9]+/g, '');
     const title = slugify(section.title).slice(0, 48) || 'document';
-    return `${number}-${title}`;
+    return number ? `${number}-${title}` : title;
   }
 
   function buildFolderPaths(entries, regionKey, submissionType = 'all') {

@@ -1,12 +1,12 @@
 # SOP-EU-001 — Operation, evidence and change control
 
-Version 1.0 · 2026-10-16 · **DRAFT — training and QA approval pending**
+Version 1.1 · 2026-11-03 · **DRAFT — training and QA approval pending**
 
 ## Before first operational use
 
 Complete the approved IQ/OQ/PQ and release approval for the defined supplementary scope. Use the approved frozen installation. Do not use the mutable demonstration site as a substitute for approved installation/change records.
 
-Download `eu-validator-v7.0.0.zip` and record its hash from `eu-validator-v7.0.0.zip.sha256` in your controlled records. Independently calculate SHA-256, compare with the independently retained expected value, extract the archive and verify its individual files against `release-manifest.json`. A hash downloaded from the same site is an integrity reference, not an authenticated signature or an independently trusted provenance anchor.
+Download `eu-validator-v7.1.0.zip` and record its hash from `eu-validator-v7.1.0.zip.sha256` in your controlled records. Independently calculate SHA-256, compare with the independently retained expected value, extract the archive and verify its individual files against `release-manifest.json`. A hash downloaded from the same site is an integrity reference, not an authenticated signature or an independently trusted provenance anchor.
 
 Serve the extracted static files using your approved HTTPS server or loopback static server. Do not open the validator through `file://`. Qualify exact browser/OS versions; Chromium is the supplied automated baseline. Other browsers need their own evidence. Preserve the entire release, notices, lockfile/source reference and records.
 
@@ -32,7 +32,8 @@ From the controlled source checkout, run `node scripts/verify-report.mjs <report
 - Browser FileList does not enumerate empty directories. The tool therefore cannot assess rule 15.10.
 - MD5 is used only because the eCTD specification requires it; SHA-256 is also recorded for inventory/report integrity. MD5 is not used for signatures or authentication.
 - File counts and memory guards are not a completed performance qualification. Large files, low-memory devices, timeout behavior, video formats and rule interpretations must be qualified for actual use.
-- This release does not include a full PDF engine, historical lifecycle engine, malware scanner, signed audit log or electronic-signature service. Record the independent controls used instead.
+- This release reads PDF properties with pdf.js. It does not perform PDF/A or full ISO 32000 conformance checks, and it does not detect links created with JavaScript. A clean PDF result does not replace comparison with the approved reference validator.
+- This release does not include a historical lifecycle engine, malware scanner, signed audit log or electronic-signature service. Record the independent controls used instead.
 
 ## Changes, incidents and retention
 

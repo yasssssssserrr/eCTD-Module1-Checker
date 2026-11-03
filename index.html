@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eCTD Workspace – EU Dossierprüfung &amp; Module-1-Vergleich</title>
   <meta name="description" content="Vergleichen Sie die eCTD-Module-1-Abschnittsstrukturen zwischen EU, UK, US, CA, CH, AU und JP.">
-  <meta name="theme-color" content="#0a0e1a">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e1626">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <link rel="stylesheet" href="style.css">
@@ -22,7 +23,7 @@
             <path d="M12 14h16M12 20h16M12 26h10" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
             <circle cx="28" cy="28" r="6" fill="url(#logoGrad)" opacity="0.9"/>
             <path d="M26 28h4M28 26v4" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"/>
-            <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+            <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#2563eb"/><stop offset="1" stop-color="#0891b2"/></linearGradient></defs>
           </svg>
         </div>
         <div>
@@ -46,11 +47,11 @@
       <button type="button" id="comparisonTab" class="active" role="tab" aria-selected="true" aria-controls="referenceWorkspace">Module 1 vergleichen</button>
     </nav>
     <section id="validatorWorkspace" role="tabpanel" tabindex="-1" aria-labelledby="validationTab" hidden>
-      <div class="qualification-notice"><strong>Qualifizierungskandidat · interne Freigabe ausstehend</strong><p>Dieses Release unterstützt technische Vorprüfungen. Es ist nicht zertifiziert und ersetzt keine vollständige EU-Validierung. Für eine intern validierte Nutzung müssen Ihr Prozesseigner und QA den definierten Einsatzzweck, die Qualifizierung und die Freigabe genehmigen.</p><a href="qualification-package.zip" download>Validierungspaket (.zip) ↓</a> · <a href="eu-validator-v7.0.0.zip" download>Release für lokalen Betrieb (.zip) ↓</a> · <a href="eu-validator-v7.0.0.zip.sha256">Release SHA-256</a></div>
+      <div class="qualification-notice"><strong>Qualifizierungskandidat · interne Freigabe ausstehend</strong><p>Dieses Release unterstützt technische Vorprüfungen. Es ist nicht zertifiziert und ersetzt keine vollständige EU-Validierung. Für eine intern validierte Nutzung müssen Ihr Prozesseigner und QA den definierten Einsatzzweck, die Qualifizierung und die Freigabe genehmigen.</p><a href="qualification-package.zip" download>Validierungspaket (.zip) ↓</a> · <a href="eu-validator-v7.1.0.zip" download>Release für lokalen Betrieb (.zip) ↓</a> · <a href="eu-validator-v7.1.0.zip.sha256">Release SHA-256</a></div>
       <section class="validator-card" aria-labelledby="validatorTitle">
         <p class="eyebrow">EU · eCTD 3.2.2 · MODULE 1 v3.1.1</p>
         <h2 id="validatorTitle">Dossier lokal prüfen</h2>
-        <p>Prüft Originaldateien: DTD-Struktur, Prüfsummen, XML-Referenzen, Envelope-Angaben und Dateinamen. Die vollständige EU-Regelabdeckung bleibt sichtbar; PDF- und Lifecycle-Prüfungen sind noch offen.</p>
+        <p>Prüft Originaldateien: DTD-Struktur, Prüfsummen, XML-Referenzen, Envelope-Angaben, Dateinamen und PDF-Eigenschaften. Die vollständige EU-Regelabdeckung bleibt sichtbar; Lifecycle-Prüfungen sind noch offen.</p>
         <p id="validatorVersion" class="validator-version"></p>
         <div class="validator-inputs">
           <div><label for="dossierFiles">Sequenz- oder Anwendungsordner auswählen</label><input id="dossierFiles" type="file" webkitdirectory multiple aria-describedby="dossierPrivacy dossierInventory"></div>
@@ -70,7 +71,7 @@
         <div class="table-container"><table class="validation-table"><caption class="sr-only">Einzelergebnisse aller Kriterien aus EU Validation Criteria v8.2</caption><thead><tr><th scope="col">EU-Regel</th><th scope="col">Prüfung</th><th scope="col">Typ</th><th scope="col">Ergebnis</th><th scope="col">Befund / Prüfgrenze</th></tr></thead><tbody id="dossierRules"></tbody></table></div>
         <p id="dossierDigest" class="report-digest"></p><p class="privacy-note">SHA-256 ist ein Integritätsnachweis für den begleitenden JSON-Inhalt, keine digitale Signatur oder unveränderliche Auditspur. Den heruntergeladenen HTML-Druckbericht können Sie im Browser als PDF drucken.</p>
       </section>
-      <details class="sources-panel"><summary>Prüfumfang und interne Qualifizierung</summary><p>Die Regelbasis enthält alle 111 IDs aus dem offiziellen EU-v8.2-Katalog. 75 Kriterien sind in diesem Release umgesetzt. Die übrigen Kriterien, darunter PDF-Eigenschaften, historische Lifecycle-Zustände und leere Ordner, werden als nicht geprüft ausgewiesen.</p><p>Unterstützter Eingabeumfang: 20.000 Dateien, 32 GiB Gesamtdaten, 20 MiB pro Backbone-XML. Originaldateien werden ausschließlich gelesen. Browserordnerauswahl erfasst keine leeren Ordner. Historische Dateien belegen allein keine Annahme durch eine Behörde.</p><p>Das Paket enthält Anforderungsspezifikation, Risikobewertung, Test-/Qualifizierungsplan, Rückverfolgbarkeit und Freigabevorlage. Die Ausführung kundenspezifischer PQ-Tests, Schulung und Genehmigung bleiben Aufgaben Ihrer Organisation. GMP-Annex-11-Prinzipien sind eine Designreferenz; die tatsächliche GxP-Anwendbarkeit ist durch QA festzulegen.</p><a href="validation/VALIDATION_PLAN.md">Validierungsplan ↗</a> · <a href="validation/TRACEABILITY.md">Anforderungen &amp; Tests ↗</a> · <a href="validation/OPERATING_PROCEDURE.md">Betriebsanweisung ↗</a> · <a href="https://esubmission.ema.europa.eu/ectd/" target="_blank" rel="noopener noreferrer">Offizielle EU-Quellen ↗</a></details>
+      <details class="sources-panel"><summary>Prüfumfang und interne Qualifizierung</summary><p>Die Regelbasis enthält alle 111 IDs aus dem offiziellen EU-v8.2-Katalog. 93 Kriterien sind in diesem Release umgesetzt, darunter alle 18 PDF-Kriterien. Die übrigen Kriterien, darunter historische Lifecycle-Zustände und leere Ordner, werden als nicht geprüft ausgewiesen.</p><p>Unterstützter Eingabeumfang: 20.000 Dateien, 32 GiB Gesamtdaten, 20 MiB pro Backbone-XML, 1 GiB pro geprüfter PDF-Datei. Originaldateien werden ausschließlich gelesen. Browserordnerauswahl erfasst keine leeren Ordner. Historische Dateien belegen allein keine Annahme durch eine Behörde.</p><p>Das Paket enthält Anforderungsspezifikation, Risikobewertung, Test-/Qualifizierungsplan, Rückverfolgbarkeit und Freigabevorlage. Die Ausführung kundenspezifischer PQ-Tests, Schulung und Genehmigung bleiben Aufgaben Ihrer Organisation. GMP-Annex-11-Prinzipien sind eine Designreferenz; die tatsächliche GxP-Anwendbarkeit ist durch QA festzulegen.</p><a href="validation/VALIDATION_PLAN.md">Validierungsplan ↗</a> · <a href="validation/TRACEABILITY.md">Anforderungen &amp; Tests ↗</a> · <a href="validation/OPERATING_PROCEDURE.md">Betriebsanweisung ↗</a> · <a href="https://esubmission.ema.europa.eu/ectd/" target="_blank" rel="noopener noreferrer">Offizielle EU-Quellen ↗</a></details>
     </section>
     <div id="referenceWorkspace" role="tabpanel" tabindex="-1" aria-labelledby="comparisonTab">
     <aside class="scope-notice" aria-label="Prüfumfang">
@@ -85,7 +86,7 @@
 
       <div class="selector-row">
         <div class="selector-group">
-          <label for="regionA" class="selector-label"><span class="selector-label-icon">①</span> Erste Region</label>
+          <label for="regionA" class="selector-label"><span class="selector-label-icon" aria-hidden="true">①</span> Erste Region</label>
           <div class="custom-select-wrapper">
             <select id="regionA" class="custom-select"><option value="" disabled selected>Region wählen …</option></select>
             <span class="select-arrow" aria-hidden="true">⌄</span>
@@ -95,7 +96,7 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 16L3 12M3 12L7 8M3 12H21M17 8L21 12M21 12L17 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="selector-group">
-          <label for="regionB" class="selector-label"><span class="selector-label-icon">②</span> Zweite Region</label>
+          <label for="regionB" class="selector-label"><span class="selector-label-icon" aria-hidden="true">②</span> Zweite Region</label>
           <div class="custom-select-wrapper">
             <select id="regionB" class="custom-select"><option value="" disabled selected>Region wählen …</option></select>
             <span class="select-arrow" aria-hidden="true">⌄</span>
@@ -105,7 +106,7 @@
 
       <div class="selector-row selector-row-sub">
         <div class="selector-group selector-group-full">
-          <label for="submissionType" class="selector-label"><span class="selector-label-icon selector-label-icon-alt">③</span> Themenfokus</label>
+          <label for="submissionType" class="selector-label"><span class="selector-label-icon selector-label-icon-alt" aria-hidden="true">③</span> Themenfokus</label>
           <div class="custom-select-wrapper">
             <select id="submissionType" class="custom-select"><option value="all" selected>Alle Themen</option></select>
             <span class="select-arrow" aria-hidden="true">⌄</span>
@@ -124,7 +125,7 @@
           <input type="search" id="searchInput" class="search-input" placeholder="Suchen: Thema, Abschnittsnr. …" autocomplete="off">
           <button type="button" class="search-clear" id="searchClear" title="Suche löschen" aria-label="Suche löschen" hidden>×</button>
         </div>
-        <div class="filter-pills" id="filterPills" aria-label="Strukturstatus filtern">
+        <div class="filter-pills" id="filterPills" role="group" aria-label="Strukturstatus filtern">
           <button type="button" class="filter-pill active" data-filter="all" aria-pressed="true">Alle</button>
           <button type="button" class="filter-pill" data-filter="match" aria-pressed="false">✓ Nr. &amp; Titel gleich</button>
           <button type="button" class="filter-pill" data-filter="partial" aria-pressed="false">≈ Abweichend</button>
@@ -167,7 +168,7 @@
 
     <section class="empty-state" id="emptyState">
       <div class="empty-state-icon" aria-hidden="true">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none"><rect x="10" y="16" width="24" height="48" rx="4" stroke="#6366f1" stroke-width="2" opacity=".5"/><rect x="46" y="16" width="24" height="48" rx="4" stroke="#06b6d4" stroke-width="2" opacity=".5"/><path d="M34 32h12M34 40h12M34 48h12" stroke="#818cf8" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 4" opacity=".4"/></svg>
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none"><rect x="10" y="16" width="24" height="48" rx="4" stroke="currentColor" stroke-width="2" opacity=".6"/><rect x="46" y="16" width="24" height="48" rx="4" stroke="currentColor" stroke-width="2" opacity=".6"/><path d="M34 32h12M34 40h12M34 48h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 4" opacity=".5"/></svg>
       </div>
       <h3>Wählen Sie zwei Regionen aus</h3>
       <p>Sobald beide Regionen ausgewählt sind, erscheint der detaillierte Vergleich der Module-1-Abschnitte.</p>

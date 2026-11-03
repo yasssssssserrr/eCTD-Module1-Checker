@@ -88,7 +88,7 @@ function start(demo) {
     worker.onmessage = ({ data }) => {
       watch();
       if (data.type === 'ready') worker.postMessage({ demo, files: demo ? undefined : selectedFiles.map(file => ({ path: file.webkitRelativePath, file })), sequence: demo ? '0000' : dom.dossierSequence.value });
-      else if (data.type === 'progress') status(data.progress.stage === 'dtd' ? `DTD-Strukturprüfung: ${data.progress.path}` : `Datei ${data.progress.current}/${data.progress.total}: ${data.progress.path}`);
+      else if (data.type === 'progress') status(data.progress.stage === 'dtd' ? `DTD-Strukturprüfung: ${data.progress.path}` : data.progress.stage === 'pdf' ? `PDF-Prüfung ${data.progress.current}/${data.progress.total}: ${data.progress.path}` : `Datei ${data.progress.current}/${data.progress.total}: ${data.progress.path}`);
       else if (data.type === 'result') { report = data.report; stop(); render(); status('Prüflauf beendet. Gesamtprüfung unvollständig; offene Kriterien und Qualifizierungsstatus beachten.'); }
       else if (data.type === 'error') { stop(); status(`Prüfung abgebrochen: ${data.message}`, true); }
     };

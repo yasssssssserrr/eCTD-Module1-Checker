@@ -2,19 +2,19 @@
 
 [EU dossier preflight](https://yasssssssserrr.github.io/eCTD-Module1-Checker/?view=validate) · [Regional reference](https://yasssssssserrr.github.io/eCTD-Module1-Checker/) · [Internal validation plan](validation/VALIDATION_PLAN.md)
 
-Software **7.0.0** is an **internal qualification candidate**. Organizational approval is pending. It is not certified and does not perform complete EU dossier validation.
+Software **7.1.0** is an **internal qualification candidate**. Organizational approval is pending. It is not certified and does not perform complete EU dossier validation.
 
 ## EU dossier preflight
 
 Select a local sequence/application folder and the intended sequence. The app reads original bytes on your device in a Web Worker. No dossier upload, browser persistence or dossier names in URLs are implemented.
 
-- Maps **75 of 111** official EU v8.2 criteria; every remaining ID is explicitly not evaluated.
+- Maps **93 of 111** official EU v8.2 criteria, including all 18 PDF criteria; every remaining ID is explicitly not evaluated.
 - Checks trusted ICH/EU DTD structure, original utility hashes, index/leaf MD5, safe relative references, selected envelope/UUID/sequence/leaf rules, and selected filesystem/tracking criteria.
 - Distinguishes P/F failures, BP warnings, not-applicable conditions and unavailable/unimplemented checks.
 - Exports JSON and printable HTML with run IDs, build/rulepack/source identifiers, selected-file and referenced-history inventories, MD5/SHA-256 and a report integrity digest.
 - Provides a versioned static release ZIP, SHA-256 sidecar, per-asset manifest, qualification documents and automated engineering evidence.
 
-PDF criteria, historical lifecycle state, authority receipt state, empty-directory detection and other gaps remain outside the implemented scope. A clean partial scope never becomes a full-EU pass. Reports are unsigned evidence, not an immutable audit trail or an electronic release signature.
+Historical lifecycle state, authority receipt state, empty-directory detection and other gaps remain outside the implemented scope. PDF results use pdf.js and still need comparison with an approved reference validator. A clean partial scope never becomes a full-EU pass. Reports are unsigned evidence, not an immutable audit trail or an electronic release signature.
 
 ## Internal validation and controlled operation
 
