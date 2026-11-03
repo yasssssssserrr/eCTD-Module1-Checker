@@ -2,7 +2,7 @@
 
 | Document field | Value |
 |---|---|
-| Application version | 8.0.0 |
+| Application version | 8.1.0 |
 | Dataset version | 2026.11.03-3 |
 | Source validation date | 3 November 2026 |
 | Status | Reference tool. Source validation has not had independent review |
@@ -75,7 +75,7 @@ The **Quellen, Prüfstand & Grenzen der Prüfung** panel lists the source, locat
 
 ### Display options
 
-The site follows the device's light or dark setting and works on phones. In a narrow window, the table scrolls sideways inside its own area.
+The site starts with the device's light or dark setting. The sun/moon button in the header switches between them, and the browser remembers that choice. The site also works on phones. In a narrow window, the table scrolls sideways inside its own area.
 
 | Dark mode | Phone |
 |---|---|
@@ -162,13 +162,14 @@ The site is static, with no backend and no runtime dependencies. All comparison 
 | `data.js` | Regions, headings, pointers and dataset metadata |
 | `zip.js` | Planning ZIP creation |
 | `app.js` | Interface, state and exports |
+| `theme.js` | Light/dark switch and remembering the choice |
 | `style.css` | Themes, responsive layout and print rules |
 | `tests/` | Reference tests and browser tests |
 | `scripts/` | Build, local server and documentation screenshots |
 
 The app checks its own data when it starts and refuses to show results if it finds structural errors, such as duplicate numbers or a pointer that conflicts with a recorded heading.
 
-**Privacy and security:** the site has no login, uploads, cookies or browser storage, and its security policy allows resources only from its own origin. Search terms and selections appear in the page address, so shared links reveal them. Opening a source link connects to that authority's website.
+**Privacy and security:** the site has no login, uploads or cookies. It stores only the chosen theme in the browser, under `ectd-theme`, and nothing else. Its security policy allows resources only from its own origin. Search terms and selections appear in the page address, so shared links reveal them. Opening a source link connects to that authority's website.
 
 **Publishing:** GitHub Pages publishes from `master` after the tests pass. Pull requests run the tests without publishing.
 

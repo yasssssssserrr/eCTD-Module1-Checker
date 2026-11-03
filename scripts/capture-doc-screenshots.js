@@ -28,7 +28,7 @@ async function row(page, id) {
   await capture('02-pointer.png', { url: './?a=eu&b=us', prepare: page => row(page, 'environment') });
   await capture('03-source-fallback.png', { url: './?a=eu&b=us', prepare: page => row(page, 'experts') });
   await capture('04-placement-restriction.png', { url: './?a=ca&b=au&q=fee', prepare: page => row(page, 'fee-forms') });
-  await capture('05-dark-mode.png', { url: './?a=eu&b=ch', scheme: 'dark' });
+  await capture('05-dark-mode.png', { url: './?a=eu&b=ch', prepare: async page => { await page.locator('#themeToggle').click(); await page.waitForTimeout(400); return null; } });
   await capture('06-mobile.png', { url: './?a=jp&b=ch', viewport: { width: 390, height: 844 } });
   await capture('07-sources.png', { url: './', prepare: async page => {
     await page.locator('#sourcesPanel summary').click();
