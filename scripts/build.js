@@ -25,7 +25,7 @@ esbuild.buildSync({ entryPoints:[path.join(root,'validator/ui.mjs')], bundle:tru
 esbuild.buildSync({ entryPoints:[path.join(root,'validator/worker.mjs')], bundle:true, format:'esm', target:'es2022', outfile:path.join(destination,'validator.worker.js'), external:['./vendor/libxml2/index.mjs'], define:{__BUILD_COMMIT__:JSON.stringify(commit)}, legalComments:'eof' });
 const vendor = path.join(destination,'vendor/libxml2'); fs.mkdirSync(vendor,{recursive:true});
 for (const filename of fs.readdirSync(path.join(root,'node_modules/libxml2-wasm/lib')).filter(name=>name.endsWith('.mjs'))) fs.copyFileSync(path.join(root,'node_modules/libxml2-wasm/lib',filename),path.join(vendor,filename));
-const licences = { '@noble/hashes':'LICENSE', '@xmldom/xmldom':'LICENSE', 'libxml2-wasm':'LICENSE' };
+const licences = { '@noble/hashes':'LICENSE', '@xmldom/xmldom':'LICENSE', 'libxml2-wasm':'LICENSE', 'pdfjs-dist':'LICENSE' };
 const notices=[];
 for(const [dependency,license] of Object.entries(licences)) notices.push(`${dependency}\n${fs.readFileSync(path.join(root,'node_modules',dependency,license),'utf8')}`);
 notices.push(fs.readFileSync(path.join(root,'node_modules/libxml2-wasm/LICENSE.libxml2'),'utf8'));

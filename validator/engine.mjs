@@ -5,6 +5,7 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 import catalogue from '../validation/eu-v8.2-catalogue.json' with { type: 'json' };
 import trusted from '../validation/trusted-sources.json' with { type: 'json' };
 import { RELEASE, IMPLEMENTED_IDS, TITLES, GAP_REASONS } from './config.mjs';
+import { evaluatePdfRules } from './pdf-rules.mjs';
 
 export { RELEASE, IMPLEMENTED_IDS, catalogue, trusted };
 const XLINK = 'http://www.w3c.org/1999/xlink';
@@ -178,6 +179,7 @@ export async function runValidation(input, options = {}) {
   const leafProbes = new Map(['11.1','11.2','11.3','11.4','11.5','11.6','11.7','11.8','11.11','15.BP4','15.BP5'].map(id => [id, []]));
   const used = new Set();
   const ids = new Set();
+  const leafSections = new Map();
   function countryFor(node) {
     for (let cursor = node.parentNode; cursor?.nodeType === 1; cursor = cursor.parentNode) {
       if (['specific','pi-doc'].includes(cursor.nodeName)) return cursor.getAttribute('country');
@@ -194,7 +196,12 @@ export async function runValidation(input, options = {}) {
       const target = resolveReference(leaf.path, leaf.href);
       const validUri = Boolean(target) && /^(?:\.\.\/)*(?:[a-z0-9-]+\/)*[a-z0-9-]+\.[a-z0-9]+$/.test(leaf.href);
       leafProbes.get('11.4').push(p(Boolean(leaf.href) && validUri, 'Leaf URI must be a safe relative file URI using permitted characters.', { reference: leaf.href }));
-      if (target) used.add(target);
+      if (target) {
+        used.add(target);
+        const sections = leafSections.get(target) || [];
+        for (let cursor = leaf.node.parentNode; cursor?.nodeType === 1; cursor = cursor.parentNode) sections.push(cursor.nodeName);
+        leafSections.set(target, sections);
+      }
       const targetSequence = target?.split('/')[0];
       if (!target || !/^\d{4}$/.test(targetSequence || '') || Number(targetSequence) > Number(sequence)) {
         leafProbes.get('11.6').push(p(false, 'Reference leaves the selected application or targets an invalid/future sequence.', { reference: leaf.href }));
@@ -282,11 +289,13 @@ export async function runValidation(input, options = {}) {
   const isVideo = path => /\.(?:mp4|mpg|mpeg|avi|mov|wmv)$/i.test(path);
   put('15.BP1', selected.filter(item => !isVideo(item.path)).map(item => probe(item.file.size <= 500 * 1000 ** 2, item.path, 'File exceeds the configured 500 MB (decimal) recommendation threshold.')));
   put('15.BP6', selected.filter(item => isVideo(item.path)).map(item => probe(item.file.size <= 1000 ** 3, item.path, 'Video exceeds the configured 1 GB (decimal) recommendation threshold.')));
+  const pdfProbes = await evaluatePdfRules({ selected, files, sequence, leafSections, centralised: envelopes.some(e => e.procedure === 'centralised'), inspectPdf: options.inspectPdf, maxBytes: RELEASE.limits.pdfBytes, onProgress: options.onProgress });
+  for (const [id, probes] of pdfProbes) put(id, probes);
 
   const ruleResults = catalogue.rules.map(rule => ({
     ...rule, title: TITLES[rule.id] || `${rule.category} · ${rule.id}`,
     implemented: IMPLEMENTED_IDS.includes(rule.id),
-    ...(results.get(rule.id) || { status: 'not-evaluated', message: GAP_REASONS[rule.id] || (rule.historyRequired ? GAP_REASONS.history : rule.id.startsWith('16.') ? GAP_REASONS.pdf : GAP_REASONS.other), findings: [], counts: {} }),
+    ...(results.get(rule.id) || { status: 'not-evaluated', message: GAP_REASONS[rule.id] || (rule.historyRequired ? GAP_REASONS.history : GAP_REASONS.other), findings: [], counts: {} }),
   }));
   for (const id of IMPLEMENTED_IDS) if (!results.has(id)) throw new Error(`Implementation did not produce a result for ${id}`);
   const failures = ruleResults.filter(r => r.status === 'fail' && r.type === 'P/F').length;
@@ -296,6 +305,7 @@ export async function runValidation(input, options = {}) {
     buildCommit: typeof __BUILD_COMMIT__ === 'undefined' ? 'working-tree' : __BUILD_COMMIT__,
     runId: options.runId || globalThis.crypto.randomUUID(), createdAt: options.createdAt || new Date().toISOString(),
     inputKind: options.inputKind || 'user-selected', sequence, environment: options.environment || {},
+    pdfEngine: options.pdfEngine || null,
     intendedUse: RELEASE.intendedUse, qualification: RELEASE.qualification, certification: 'NOT_CERTIFIED',
     overall: failures || local.length ? 'issues-found' : 'incomplete',
     fullEuValidationComplete: false,
@@ -303,7 +313,8 @@ export async function runValidation(input, options = {}) {
     sources: { criteriaUrl: catalogue.sourceUrl, criteriaSha256: catalogue.sourceSha256, utilityArchiveUrl: trusted.sourceUrl, utilityArchiveSha256: trusted.archiveSha256, reviewedAt: catalogue.reviewedAt },
     limitations: [
       'This release is not approved for operational reliance until organizational QA completes qualification and signs the intended-use release.',
-      'Full EU validation is incomplete. PDF criteria, lifecycle state, empty directories and other gaps are explicitly listed in rule results.',
+      'Full EU validation is incomplete. Lifecycle state, empty directories and other gaps are explicitly listed in rule results.',
+      'PDF criteria are read with pdf.js, which tolerates some damaged files, and do not include links created with JavaScript or backslashes hidden in compressed objects. Confirm PDF results against an approved reference validator.',
       'Prior files supplied for reference hashing are evidence of availability only, not of authority receipt or valid lifecycle state.',
       'No malware scan, clinical/CMC/content assessment, electronic signature, immutable audit trail or authority acceptance decision is provided.',
       'The report digest is not a digital signature. Store approved evidence and its digest independently under your document-control procedure.',

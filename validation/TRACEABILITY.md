@@ -1,6 +1,6 @@
 # RTM-EU-001 — Requirements and test traceability
 
-Version 1.0 · 2026-10-16 · **DRAFT — independent coverage review pending**
+Version 1.1 · 2026-11-03 · **DRAFT — independent coverage review pending**
 
 `tests/validator/run-validation-tests.mjs` contains stable engineering test identifiers. Executed results, environment and source hashes are generated in `automated-execution.json`. The source catalogue maps each official ID to its worksheet row; every dossier report lists all IDs and implementation status.
 
@@ -21,11 +21,12 @@ Version 1.0 · 2026-10-16 · **DRAFT — independent coverage review pending**
 | URS-13 | Browser network/storage/URL checks | IQ/PQ network capture and endpoint/browser policy review |
 | URS-14 | Generated package, catalogue, release manifest and source hashes | Review IQ evidence and sign all approval documents |
 | URS-15 | Existing reference suite and validator browser suite | Customer user acceptance/accessibility and supported browsers |
+| URS-16 | VAL-055–070, EU-B01 browser engine execution | Real dossier PDFs from each producing tool; reconciliation of every 16.x result with the reference validator |
 
 ## Official rule mapping
 
 Implemented IDs are controlled in `validator/config.mjs` (`IMPLEMENTED_IDS`), not inferred from heading data. The full set is in `eu-v8.2-catalogue.json`. Rule result fields include `id`, `sourceRow`, `type`, `implemented`, `status`, probe counts, findings, and a truncation marker when detailed findings exceed 500. Counts remain available even when display detail is limited.
 
-Utility groups 1–6 check names, locations and exact baseline hashes. Groups 7–9 check XML/checksum locations, parsing, DTDs, references and UUIDs. Selected groups 10–15 check headings, leaf attributes/references, envelopes, naming and tracking. PDF criteria (group 16), historical lifecycle and other omitted criteria remain open.
+Utility groups 1–6 check names, locations and exact baseline hashes. Groups 7–9 check XML/checksum locations, parsing, DTDs, references and UUIDs. Selected groups 10–15 check headings, leaf attributes/references, envelopes, naming and tracking. Group 16 checks PDF properties with pinned pdf.js. Historical lifecycle and other omitted criteria remain open.
 
 This is requirement-level traceability and a starting protocol. Supplied engineering cases do not constitute independent full branch coverage, authority certification or an approved OQ. QA must review the exact case execution output and close identified coverage gaps before approving operational reliance.

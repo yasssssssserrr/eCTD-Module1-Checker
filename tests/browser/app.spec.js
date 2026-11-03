@@ -11,7 +11,7 @@ test('loads a usable default comparison without external requests or script erro
   await expect(page.locator('#regionA')).toHaveValue('eu');
   await expect(page.locator('#regionB')).toHaveValue('us');
   await expect(page.locator('#statPairs')).not.toHaveText('0');
-  await expect(page.locator('#dataStatus')).toContainText('2026.10.16');
+  await expect(page.locator('#dataStatus')).toContainText('2026.11.03');
   expect(errors).toEqual([]);
   expect(external).toEqual([]);
 });

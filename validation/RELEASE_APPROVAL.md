@@ -1,6 +1,6 @@
 # VSR-EU-001 — Validation summary and release decision template
 
-Version 1.0 · Candidate software 7.0.0 · 2026-10-16
+Version 1.1 · Candidate software 7.1.0 · 2026-11-03
 
 **CURRENT DECISION: NOT APPROVED FOR OPERATIONAL RELIANCE.** This file is a template, not a certificate, signed qualification or retrospective approval.
 
@@ -16,7 +16,7 @@ Version 1.0 · Candidate software 7.0.0 · 2026-10-16
 | IQ execution evidence and deviations | Not executed by the organization |
 | OQ execution evidence and coverage review | Supplied engineering evidence available; formal OQ pending |
 | PQ using representative dossiers and reference validator | Not executed |
-| Outstanding official rules and independent checks | 36 unimplemented IDs; review current report and approved independent controls |
+| Outstanding official rules and independent checks | 18 unimplemented IDs; review current report and approved independent controls |
 | Training, SOP, retention, backup and change controls | Pending |
 | Residual risks and accepted deviations | Pending QA decision |
 | Release scope and expiry / next review | Pending |

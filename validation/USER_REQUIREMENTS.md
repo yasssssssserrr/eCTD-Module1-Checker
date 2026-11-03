@@ -1,6 +1,6 @@
 # URS-EU-001 — User requirements
 
-Version 1.0 · 2026-10-16 · **DRAFT — process-owner and QA approval pending**
+Version 1.1 · 2026-11-03 · **DRAFT — process-owner and QA approval pending**
 
 User population: trained regulatory-operations personnel. Intended use: supplementary EU eCTD 3.2.2 technical preflight; independent full validation and submission-release decisions remain outside this system.
 
@@ -21,9 +21,10 @@ User population: trained regulatory-operations personnel. Intended use: suppleme
 | URS-13 | Keep dossier bytes and names local; do not upload, persist in browser storage, include in URLs or embed in the publicly published build | High |
 | URS-14 | Provide a frozen build manifest, requirements, risks, protocols, traceability, operating instructions, approval template and engineering evidence | High |
 | URS-15 | Permit authorized users to review results and gaps in a usable desktop/mobile interface and reproduce a chosen rulepack/build | Medium |
+| URS-16 | Evaluate EU PDF criteria 16.1–16.BP11 locally without rendering, script execution or network access; keep oversized, unidentified or unreadable cases not evaluated; never report a password-protected file as corrupted | High |
 
-Capacity profile: at most 20,000 files and 32 GiB selected input; each backbone XML at most 20 MiB. Hashing is incremental. These are implementation guards, not a completed performance qualification. Empty directories are not observable via browser FileList.
+Capacity profile: at most 20,000 files and 32 GiB selected input; each backbone XML at most 20 MiB; each inspected PDF at most 1 GiB, with link annotations read for at most 5,000 pages. Hashing is incremental. These are implementation guards, not a completed performance qualification. Empty directories are not observable via browser FileList.
 
-Out of scope: all non-EU formats; EU eCTD v4.0; complete PDF conformance/content/attachment/link/security validation; full dossier completeness; signed or immutable audit records; user authentication/authorization management; authority receipt-state integration; clinical/CMC assessment; electronic submission; regulatory certification.
+Out of scope: all non-EU formats; EU eCTD v4.0; PDF/A or full ISO 32000 conformance and PDF content validation; full dossier completeness; signed or immutable audit records; user authentication/authorization management; authority receipt-state integration; clinical/CMC assessment; electronic submission; regulatory certification.
 
 Organization-specific requirements, retention periods, GxP applicability, installation scale, access management and reference-validator comparison must be added and approved before operational release.

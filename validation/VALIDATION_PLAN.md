@@ -1,12 +1,12 @@
 # VP-EU-001 — Internal software validation plan
 
-Version 1.0 · Software 7.0.0 · 2026-10-16 · **DRAFT — NOT APPROVED FOR OPERATIONAL RELIANCE**
+Version 1.1 · Software 7.1.0 · 2026-11-03 · **DRAFT — NOT APPROVED FOR OPERATIONAL RELIANCE**
 
 ## Intended use and boundary
 
 The system provides supplementary, browser-local technical preflight of one selected EU eCTD 3.2.2 sequence using EU Module 1 specification 3.1.1, DTD 3.1 and validation criteria 8.2. It may support an independently performed regulatory submission review after organizational qualification. It does not authorize submission release, validate clinical/CMC content, or certify a dossier.
 
-The controlled implementation maps 75 of 111 official rule IDs. The remaining 36 IDs are explicitly not evaluated. In particular, PDF criteria, historical lifecycle-state checks, empty-directory detection, some naming/format guidance and other outstanding rules need independent checks. A clean implemented scope is not a successful full EU validation. The official catalogue, not the regional heading-comparison dataset, drives this engine.
+The controlled implementation maps 93 of 111 official rule IDs, including the 18 PDF criteria read with pinned pdf.js. The remaining 18 IDs are explicitly not evaluated. In particular, historical lifecycle-state checks, empty-directory detection, some naming/format guidance and other outstanding rules need independent checks. A clean implemented scope is not a successful full EU validation. The official catalogue, not the regional heading-comparison dataset, drives this engine.
 
 The live GitHub Pages deployment is a qualification candidate and demonstration. A mutable website URL alone is not a qualified installation. Freeze the versioned release ZIP, its separately recorded SHA-256, the source commit and the deployment manifest for a controlled installation. Qualify the actual browser, operating system, hosting arrangement and procedures used by your organization.
 
@@ -48,7 +48,11 @@ Use `QUALIFICATION_PROTOCOL.md` for case-level expected/actual results, evidence
 
 ## Controlled interpretation decisions to approve
 
-The implementation uses decimal 500 MB / 1 GB size thresholds; supports safe, percent-free relative leaf file URIs; rejects internal XML subsets/entities and `xml:base`; interprets the tracking-file variable suffix as optional under the general filename convention; and uses a syntactically constrained UUID profile. Confirm each against the intended dossiers and an approved reference validator during OQ/PQ. Unsupported but otherwise legal inputs must be escalated, not automatically declared a compliant dossier.
+The implementation uses decimal 500 MB / 1 GB size thresholds; supports safe, percent-free relative leaf file URIs; rejects internal XML subsets/entities and `xml:base`; interprets the tracking-file variable suffix as optional under the general filename convention; and uses a syntactically constrained UUID profile.
+
+PDF criteria add these decisions: "opens without error" (16.5) means pdf.js can parse the file and its first page, and pdf.js tolerates some damage; for 16.4, the allowed "page extraction" and "template pages" restrictions map to the assembly permission, and content-copying restrictions fail; eAFs (16.6/16.7) are identified only from PDF properties, FHIR content is not read, and unidentified PDFs in section 1.2 stay not evaluated; signed files are identified by the AcroForm signature flag and exempt only from 16.3; "default" magnification (16.BP6) allows an open action that inherits zoom; links to other files without readable destination zoom leave 16.BP4 not evaluated. Links created with JavaScript and backslashes inside compressed objects are not detected (16.BP10). Files above 1 GiB are not inspected.
+
+Confirm each against the intended dossiers and an approved reference validator during OQ/PQ. Unsupported but otherwise legal inputs must be escalated, not automatically declared a compliant dossier.
 
 ## Change and periodic review
 

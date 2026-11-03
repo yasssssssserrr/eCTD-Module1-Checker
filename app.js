@@ -272,7 +272,7 @@
         ${links ? `<ul>${links}</ul>` : ''}
       </details>` : '';
     return `
-      <span class="section-number">${escapeHtml(section.num)}</span>
+      <span class="section-number">${section.unnumbered ? 'ohne Nr.' : escapeHtml(section.num)}</span>
       <span class="section-title">${escapeHtml(section.title)}</span>
       ${section.reqCondition ? `<span class="section-condition">${escapeHtml(section.reqCondition)}</span>` : ''}
       ${details}
@@ -419,7 +419,7 @@
 
   function renderDataStatus() {
     if (!dom.dataStatus) return;
-    dom.dataStatus.textContent = `Regionaler Referenzdatensatz ${DATASET_META.version} · Quellenprüfung ${DATASET_META.lastReviewedAt} · EU-Dossierprüfung v7.0.0: Qualifizierungskandidat, interne Freigabe ausstehend.`;
+    dom.dataStatus.textContent = `Regionaler Referenzdatensatz ${DATASET_META.version} · Quellenprüfung ${DATASET_META.lastReviewedAt} · EU-Dossierprüfung v7.1.0: Qualifizierungskandidat, interne Freigabe ausstehend.`;
   }
 
   function renderSources() {

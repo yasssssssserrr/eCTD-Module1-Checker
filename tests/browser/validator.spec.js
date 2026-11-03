@@ -19,13 +19,13 @@ test('EU-B01 demo executes real browser DTD checks and discloses all incomplete 
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await demo(page);
   await expect(page.locator('#dossierConclusion')).toContainText('Gesamtprüfung unvollständig');
-  await expect(page.locator('#dossierSummary')).toContainText('36');
+  await expect(page.locator('#dossierSummary')).toContainText('18');
   await expect(page.locator('#dossierRunMeta')).toContainText('SYNTHETISCHE DEMO');
   await page.locator('#dossierFilter').selectOption('all');
   await expect(page.locator('#dossierRules tr')).toHaveCount(111);
   await expect(page.locator('#dossierRules tr').filter({has:page.getByRole('link',{name:'7.4',exact:true})})).toContainText('Bestanden');
   await expect(page.locator('#dossierRules tr').filter({has:page.getByRole('link',{name:'9.4',exact:true})})).toContainText('Bestanden');
-  await expect(page.locator('#dossierRules tr').filter({has:page.getByRole('link',{name:'16.5',exact:true})})).toContainText('Nicht geprüft');
+  await expect(page.locator('#dossierRules tr').filter({has:page.getByRole('link',{name:'16.5',exact:true})})).toContainText('Bestanden');
   expect(errors).toEqual([]);
 });
 test('EU-B02 directory selection scans files without uploads, name disclosure or browser storage',async({page,baseURL})=>{
@@ -63,9 +63,9 @@ test('EU-B06 cancellation and clearing discard stale results',async({page})=>{
   await page.locator('#demoDossier').click();await expect(page.locator('#dossierResults')).toBeVisible({timeout:30000});await page.locator('#clearDossier').click();await expect(page.locator('#dossierResults')).toBeHidden();await expect(page.locator('#runDossier')).toBeDisabled();
 });
 test('EU-B07 controlled release ZIP, manifest and qualification package are downloadable',async({page})=>{
-  await page.goto('./?view=validate');const manifest=await(await page.request.get('release-manifest.json')).json();expect(manifest.version).toBe('7.0.0');expect(manifest.qualification).toBe('PENDING_ORGANIZATIONAL_APPROVAL');
-  const zip=await page.request.get('eu-validator-v7.0.0.zip');expect(zip.ok()).toBe(true);const bytes=await zip.body();expect(bytes.readUInt32LE(0)).toBe(0x04034b50);
-  const expected=(await(await page.request.get('eu-validator-v7.0.0.zip.sha256')).text()).split(' ')[0];expect(crypto.createHash('sha256').update(bytes).digest('hex')).toBe(expected);
+  await page.goto('./?view=validate');const manifest=await(await page.request.get('release-manifest.json')).json();expect(manifest.version).toBe('7.1.0');expect(manifest.qualification).toBe('PENDING_ORGANIZATIONAL_APPROVAL');
+  const zip=await page.request.get('eu-validator-v7.1.0.zip');expect(zip.ok()).toBe(true);const bytes=await zip.body();expect(bytes.readUInt32LE(0)).toBe(0x04034b50);
+  const expected=(await(await page.request.get('eu-validator-v7.1.0.zip.sha256')).text()).split(' ')[0];expect(crypto.createHash('sha256').update(bytes).digest('hex')).toBe(expected);
   const qualifications=await page.request.get('qualification-package.zip');expect(qualifications.ok()).toBe(true);expect((await qualifications.body()).toString()).toContain('VALIDATION_PLAN.md');
 });
 test('EU-B08 validator mobile layout and keyboard tabs remain usable',async({page})=>{
