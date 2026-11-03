@@ -20,8 +20,11 @@
   const currentTheme = () => root.dataset.theme || (systemDark.matches ? 'dark' : 'light');
 
   function applyTheme(theme) {
+    root.classList.add('theme-changing');
     root.dataset.theme = theme;
     global.document.querySelectorAll('meta[name="theme-color"]').forEach(meta => { meta.content = COLORS[theme]; });
+    // Every color changes in the same frame, so no control lags behind the page.
+    global.requestAnimationFrame(() => global.requestAnimationFrame(() => root.classList.remove('theme-changing')));
   }
 
   function renderSwitch(button) {
@@ -30,6 +33,7 @@
     button.dataset.current = theme;
     button.setAttribute('aria-label', label);
     button.title = label;
+    global.document.getElementById('themeLabel').textContent = theme === 'dark' ? 'Hell' : 'Dunkel';
   }
 
   const initial = savedTheme();
