@@ -1,24 +1,16 @@
 {
   "name": "ectd-module-1-checker",
-  "version": "7.1.0",
+  "version": "8.0.0",
   "private": true,
-  "description": "Browser-local EU eCTD technical preflight and regional Module 1 reference; internal qualification candidate.",
+  "description": "Browser-based comparison of regional eCTD Module 1 headings with official sources.",
   "scripts": {
     "test": "node tests/run-tests.js",
     "start": "node scripts/serve.js",
     "build": "node scripts/build.js",
     "test:browser": "playwright test",
-    "test:validator": "node tests/validator/run-validation-tests.mjs",
-    "check": "node --check core.js && node --check data.js && node --check zip.js && node --check app.js && node tests/run-tests.js && node tests/validator/run-validation-tests.mjs"
+    "check": "node --check core.js && node --check data.js && node --check zip.js && node --check app.js && node tests/run-tests.js"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.1",
-    "esbuild": "0.28.2"
-  },
-  "dependencies": {
-    "@noble/hashes": "2.4.0",
-    "@xmldom/xmldom": "0.9.12",
-    "libxml2-wasm": "0.7.2",
-    "pdfjs-dist": "6.5.438"
+    "@playwright/test": "1.64.1"
   }
 }

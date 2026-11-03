@@ -1,434 +1,228 @@
-# eCTD Module 1 Checker
-
-> Historical version 5.1 documentation. The current version is documented in [README.md](README.md) and [VALIDATION_REPORT.md](VALIDATION_REPORT.md). Earlier mandatory labels, regional submission-type equivalences and official-folder claims are superseded by the reviewed scope in those documents.
+# eCTD Module 1 Comparison
 
 | Document field | Value |
 |---|---|
-| Application version | 5.1.0 |
-| Documentation status | Historical / superseded by the current README.md |
-| Application status | Local prototype / internal reference tool |
-| Dataset version | 2026.09 |
-| Dataset last reviewed | 24 September 2026 |
-| Supported regions | European Union, United Kingdom, United States, Canada, Switzerland, Australia and Japan |
-| Application owner | To be assigned |
+| Application version | 8.0.0 |
+| Dataset version | 2026.11.03-3 |
+| Source validation date | 3 November 2026 |
+| Status | Reference tool. Source validation has not had independent review |
+| Regions | European Union, United Kingdom, United States, Canada, Switzerland, Australia and Japan |
+| Website | https://yasssssssserrr.github.io/eCTD-Module1-Checker/ |
+| Source code | https://github.com/yasssssssserrr/eCTD-Module1-Checker |
+| Product owner | To be assigned |
 | Regulatory data owner | To be assigned |
 | Technical owner | To be assigned |
 
-> **Important:** The current version is not a publicly hosted website. It is a static application that runs locally in a web browser. This documentation describes the application, its intended use and its operating model so that stakeholders can understand and evaluate it before any future deployment.
+> The tool helps people find and compare Module 1 headings. It does not check dossiers, and it does not say which documents a submission must contain.
 
-## 1. Executive summary
+## 1. Purpose
 
-The **eCTD Module 1 Checker** is a browser-based reference application for comparing regional eCTD Module 1 structures.
+Module 1 is region-specific, so the same topic can have a different number or title in each region. This tool shows two regions side by side, links to the official source for each heading, and points to where a topic may be found when a region has no direct mapping.
 
-Module 1 is region-specific. The numbering, naming and applicability of its sections can therefore differ between regulatory authorities. The application brings these structures into one comparison view and helps regulatory users identify:
+It helps Regulatory Affairs, Regulatory Operations and publishing teams with first orientation, gap discussions and planning.
 
-- sections with the same number and title in both selected regions;
-- sections that exist in both regions but use a different structure;
-- sections that exist in only one of the selected regions;
-- mandatory, conditional and optional requirements;
-- relevant official authority sources;
-- the effect of a selected submission type on the displayed sections.
+The EU dossier check that versions 7.0 and 7.1 included was removed in 8.0.0, because the goal is the Module 1 comparison. Its last version is commit `2ad23ce` in Git.
 
-The application is intended to improve orientation and planning. It does **not** validate an eCTD sequence, inspect submitted files or replace current authority specifications and regulatory expertise.
+## 2. How to use it
 
-## 2. Purpose and business value
+![Comparison overview](docs/screenshots/01-overview.png)
 
-Regulatory teams working across several markets must repeatedly determine how the administrative content of one region maps to another. Performing this comparison manually is time-consuming and can produce inconsistent results when source documents, local spreadsheets or individual interpretations differ.
+1. Open the website and choose two regions.
+2. Optionally choose a topic focus.
+3. Read the summary for each region, including its version and limits.
+4. Use the search box or the status filters to narrow the table.
+5. Open a heading's **Quelle** link to read the official source.
+6. Export the view as CSV or PDF, or download the planning ZIP.
 
-The application provides a common reference view that can:
+The address bar keeps the selected regions, focus, search and filter, so **Link kopieren** shares the exact view.
 
-- reduce the time required for an initial regional gap assessment;
-- support submission planning and cross-region discussions;
-- make region-specific differences more visible;
-- provide a shared vocabulary for Regulatory Affairs, Regulatory Operations and publishing teams;
-- give users direct access to the source links recorded in the dataset;
-- generate a preliminary folder structure for planning purposes;
-- export comparison results for review and documentation.
-
-## 3. Scope
-
-### 3.1 Included in the current version
-
-The current dataset covers Module 1 reference structures for:
-
-| Code | Region | Authority |
-|---|---|---|
-| EU | European Union | EMA / EU eSubmission |
-| UK | United Kingdom | MHRA |
-| US | United States | FDA |
-| CA | Canada | Health Canada |
-| CH | Switzerland | Swissmedic |
-| AU | Australia | TGA |
-| JP | Japan | PMDA |
-
-The application supports the following submission filters:
-
-- all sections;
-- initial application;
-- Variation Type IA;
-- Variation Type IB;
-- Variation Type II / Major Supplement / SNDS;
-- renewal;
-- PSUR / PBRER / Annual Report.
-
-### 3.2 Outside the current scope
-
-The application does not currently:
-
-- accept or inspect an eCTD submission;
-- parse XML backbones or lifecycle metadata;
-- validate file names, leaf attributes, checksums or sequence operations;
-- validate content against an authority validator;
-- guarantee that a section is required for a specific product or procedure;
-- manage user accounts, roles or permissions;
-- store comparison history in a database;
-- provide collaboration, commenting or approval workflows;
-- update regulatory data automatically;
-- provide a centrally hosted URL.
-
-## 4. Intended users
-
-| User group | Typical use |
-|---|---|
-| Regulatory Affairs | Understand high-level regional differences and applicability |
-| Regulatory Operations | Plan Module 1 content and folder structures |
-| Submission Publishing | Review regional organization before publishing activities |
-| Project and Submission Managers | Support scope, effort and gap discussions |
-| Quality or Process Owners | Review the reference model and data governance |
-| Developers and Support | Maintain the application, data and test suite |
-
-The tool assumes that users understand basic eCTD terminology. It is not a substitute for regulatory training.
-
-## 5. Current access model
-
-The current application is delivered as a set of static files. There is no application server and no installation wizard.
-
-To open it:
-
-1. Obtain the complete application folder.
-2. Keep all files in their existing relative locations.
-3. Open `index.html` in a current browser.
-4. Select two regions to display the comparison.
-
-Current project location:
-
-```text
-C:\Users\Ibourk\Desktop\eCTD_Checker_App_v5
-```
-
-Because this is a local build:
-
-- users do not access it through a shared corporate URL;
-- updates must be distributed as a new application folder or through source control;
-- all comparison processing takes place in the browser;
-- there is no central usage tracking or audit trail;
-- users may unknowingly run different dataset versions unless distribution is controlled.
-
-## 6. User workflow
-
-### 6.1 Create a comparison
-
-1. Select the first region.
-2. Select the second region.
-3. Optionally select a submission type.
-4. Review the specification summary and official source links.
-5. Use search or a structure-status filter to narrow the result.
-6. Expand or collapse hierarchical groups as needed.
-
-The comparison is recalculated whenever a region or submission type changes.
-
-### 6.2 Interpret the structure status
+### Reading the table
 
 | Status | Meaning |
 |---|---|
-| **Same structure** | Both regions use the same recorded section number and title |
-| **Different** | Both regions contain the logical topic, but their recorded number or title differs |
-| **Missing regionally** | The logical topic is represented in only one selected region |
-| **Grouping** | The row is included as hierarchy context for a matching child |
+| **Nr. & Titel gleich** | Both regions record the same number and title. The content or requirement can still differ. |
+| **Abweichend** | Both regions have the topic, with a different number or title. |
+| **Keine Zuordnung** | Only one region has a direct mapping in this dataset. This does not mean that the other region has no such content. |
 
-“Same structure” refers only to the recorded section number and title. It does not mean that the required documents, content expectations or regulatory assessment are identical.
-
-### 6.3 Interpret requirement indicators
-
-Requirements are shown independently for Region A and Region B:
-
-| Requirement | Meaning |
+| Evidence label | Meaning |
 |---|---|
-| **Mandatory** | The dataset marks the topic as generally required for the applicable submission type |
-| **Conditional** | Applicability depends on product, procedure, submission or authority-specific conditions |
-| **Optional** | The section may be provided where relevant |
+| **Quelle geprüft** | Number and title were checked against the cited authority source. |
+| **Formatreferenz** | UK only. The heading comes from the EU structure, as the MHRA guidance requires for International Recognition Procedure applications. |
 
-Any explanatory condition stored in the dataset is displayed below the regional section.
+### When a region has no mapping
 
-### 6.4 Search and filter
+If the topic is related to a heading in that region, the table shows where to look:
 
-Search considers:
+![Pointer to a related heading](docs/screenshots/02-pointer.png)
 
-- logical topic;
-- regional section number;
-- regional section title;
-- notes;
-- requirement conditions.
+Otherwise it links to that region's official source:
 
-Structure filters can show:
+![Link to the official source](docs/screenshots/03-source-fallback.png)
 
-- all result rows;
-- only the same structures;
-- only different structures;
-- topics missing from one region.
+Pointers are editorial. They show where to look and do not establish equivalent content or requirements. Search also finds them, and the CSV export lists them in their own columns.
 
-When a child matches a search or filter, its parent grouping remains visible to preserve context.
+### Authority restrictions
 
-### 6.5 Export options
+Some headings carry a restriction from the authority, shown beside the title. For example, Health Canada says not to place documents in 1.2.2 Fee Forms:
 
-| Export | Behavior |
+![Placement restriction](docs/screenshots/04-placement-restriction.png)
+
+### Sources and limits
+
+The **Quellen, Prüfstand & Grenzen der Prüfung** panel lists the source, location and limits for each region:
+
+![Sources panel](docs/screenshots/07-sources.png)
+
+### Display options
+
+The site follows the device's light or dark setting and works on phones. In a narrow window, the table scrolls sideways inside its own area.
+
+| Dark mode | Phone |
 |---|---|
-| CSV | Exports the current comparison filter, including context rows, requirements, notes, source URLs, dataset date and disclaimer |
-| PDF | Opens the browser print workflow and prints the current filtered result |
-| Folder ZIP | Generates a real ZIP archive containing nested, empty reference folders for both selected regions |
+| ![Dark mode](docs/screenshots/05-dark-mode.png) | ![Phone layout](docs/screenshots/06-mobile.png) |
 
-The generated ZIP is a planning aid. It is not an authority-ready eCTD sequence and does not contain XML, metadata or submission documents.
+### Exports
 
-## 7. Data model and governance
-
-### 7.1 Dataset structure
-
-The application uses a normalized logical-topic model. A logical topic can contain:
-
-- a stable internal identifier;
-- a display topic;
-- a logical parent;
-- an optional region-specific parent override;
-- region-specific section number and title;
-- region-specific requirement level and condition;
-- applicable submission types;
-- supporting documents and links;
-- an authority source and review date;
-- explanatory notes.
-
-Explicit parent identifiers ensure that hierarchy does not change when users search, filter or reorder the display.
-
-### 7.2 Dataset validation
-
-The application validates its dataset during startup. It refuses to show comparison results if critical structural errors are detected, including:
-
-- duplicate entry identifiers;
-- unknown regions or submission types;
-- missing numbers or titles;
-- invalid requirement values;
-- duplicate regional number/title combinations;
-- missing parent entries;
-- hierarchy cycles.
-
-### 7.3 Regulatory ownership
-
-The dataset requires an assigned regulatory owner. The owner should:
-
-1. monitor relevant authority specification changes;
-2. assess whether a change affects section numbering, naming, hierarchy or applicability;
-3. update the affected regional records;
-4. update the dataset version and review date;
-5. record the authority source used;
-6. execute the regression suite;
-7. arrange a subject-matter review before release.
-
-Recommended review frequency: at least quarterly and whenever an authority announces a relevant specification change.
-
-### 7.4 Source hierarchy
-
-The following source priority should be used:
-
-1. current authority specification or implementation package;
-2. current authority validation criteria or technical guidance;
-3. current authority procedure guidance;
-4. internal interpretation approved by the regulatory data owner.
-
-The application contains links to the authority pages used as starting points. The linked material remains authoritative over the local dataset.
-
-## 8. Technical architecture
-
-The application has no backend and no framework dependency.
-
-```text
-index.html
-    |
-    +-- core.js  ------ comparison, filtering, validation and folder-path logic
-    |
-    +-- data.js  ------ regions, submission types and normalized regulatory dataset
-    |
-    +-- zip.js   ------ dependency-free ZIP generation
-    |
-    +-- app.js   ------ browser state, rendering, interactions and exports
-    |
-    +-- style.css ----- responsive layout, accessibility and print presentation
-```
-
-| Component | Responsibility |
+| Export | Contents |
 |---|---|
-| `index.html` | Semantic page structure and loading order |
-| `core.js` | Pure domain functions independent of the browser UI |
-| `data.js` | Regulatory reference records and dataset metadata |
-| `zip.js` | Creation of nested ZIP directory entries |
-| `app.js` | UI controller, state management and browser export actions |
-| `style.css` | Visual design, responsive behavior and print rules |
-| `tests/run-tests.js` | Dependency-free regression suite |
+| CSV | The filtered rows with numbers, titles, source links, locations, review status, pointers, dataset date and disclaimer |
+| PDF | The browser's print view of the filtered rows |
+| Planning ZIP | Empty folders with readable names and a notice. These are **not** official eCTD submission paths |
 
-The browser loads the scripts in this order:
+## 3. Content
 
-1. `core.js`
-2. `data.js`
-3. `zip.js`
-4. `app.js`
+| Region | Authority | Reference used | Headings |
+|---|---|---|---|
+| EU | EMA | EU M1 v3.1.1, eCTD 3.2.2; criteria v8.2, mandatory since 1 December 2025 | 32 |
+| UK | MHRA | EU format as required by the IRP guidance, updated 9 October 2026 | 32 |
+| US | FDA | Regional DTD v3.3, specification v2.6, heading list v2.3.5; criteria v4.7 | 35 selected |
+| Canada | Health Canada | Placement table of 2 April 2024, Schema v2.2; validation rules v5.3 | 35 selected |
+| Switzerland | Swissmedic | Swiss M1 specification v1.5, revision 1.6; criteria v1.5 | 36 selected |
+| Australia | TGA | AU M1 v3.2, effective 1 April 2025; criteria v3.2 | 66, all |
+| Japan | PMDA | eCTD v4.0 package v1.6.0.3, JP CV 2026-06 | 20, all |
 
-Changing this order can prevent the application from starting.
+There are 256 headings in 166 rows, and 130 pointers for regions without a mapping.
 
-## 9. Security and privacy
+Coming changes that users should know about:
 
-The current application:
+- **EU:** eCTD v4.0 is optional for new centrally authorised applications since 22 December 2025, strongly recommended from Q1 2027 and mandatory from Q1 2028.
+- **US:** forward compatibility to eCTD v4.0 has been supported since 16 October 2026. From 16 January 2027, FDA rejects submissions that fail the new high-severity validations 2024 and 2025.
 
-- does not contain a backend;
-- does not request user credentials;
-- does not upload comparison data;
-- does not persist user selections;
-- does not use browser local storage or cookies;
-- escapes dynamic values before rendering them as HTML;
-- accepts only HTTPS links for dynamic external references;
-- protects CSV exports against spreadsheet formula injection.
+This tool shows eCTD 3.2.2 structures, except for Japan, whose headings come from its v4.0 package.
 
-The page currently loads the Inter font from Google Fonts. Opening authority source links also connects the browser to external authority websites. These external requests should be reviewed against the organization’s privacy, network and content-security requirements before corporate deployment.
+## 4. Source validation
 
-## 10. Quality assurance
+On 3 November 2026, every heading and pointer was compared with text from the authority sources, and section descriptions and notices were read as well. No difference remains. The full record is in [VALIDATION_REPORT.md](VALIDATION_REPORT.md).
 
-The project includes an automated regression suite that verifies:
+Main corrections from this validation:
 
-- dataset validity;
-- hierarchy integrity and cycle prevention;
-- known parent-child relationships;
-- every region-pair and submission-filter combination;
-- uniqueness and nesting of folder paths;
-- the Australia patent-information parent mapping;
-- search/filter context behavior;
-- CSV content and formula-injection protection;
-- ZIP signatures and directory entries;
-- rejection of duplicate regional sections.
+- Canada: added the Health Canada placement restrictions, such as no documents in 1.2.2 and 1.5, and made the placement table the primary source.
+- Japan: added the eight 1.13 codes.
+- Australia: added 6.1 Medical Device.
+- EU and FDA: corrected source page numbers.
+- FDA: added the January 2027 rejection date.
 
-Current result:
+Not verified:
 
-| Measure | Result |
+- The TGA CTD Module 1 guidance could not be downloaded, so Australian section content and pointers are not verified.
+- The Health Canada eCTD preparation guidance is available only on request.
+- PMDA's Japanese documents were only partly read.
+- The grouping of topics across regions is editorial, and nobody has independently reviewed it.
+- The US, Canada and Switzerland cover selected headings only.
+
+## 5. Keeping the content current
+
+Authority sources change without notice from this tool, so the regulatory data owner should:
+
+1. Check each authority's source at least quarterly and when an authority announces a change.
+2. Update only the affected records in `data.js`, with the source and its location.
+3. Update `DATASET_META.version` and `lastReviewedAt`, and record the change in `VALIDATION_REPORT.md`.
+4. Run the tests, have a regulatory reviewer check the change, and open a pull request.
+
+Health Canada's placement table in particular changes periodically, and Health Canada makes sponsors responsible for watching it.
+
+| Watch | Source |
 |---|---|
-| Automated tests | 10 passed, 0 failed |
-| Region pairs checked | 21 |
-| Submission filters checked | 7 |
-| JavaScript syntax check | Passed |
-| HTML/JavaScript element contract | 27 required elements found |
-| Duplicate HTML identifiers | None |
+| EU | [EMA eCTD M1 page](https://esubmission.ema.europa.eu/eumodule1/index.htm), [EMA eCTD v4.0 page](https://esubmission.ema.europa.eu/eCTD%20NMV/eCTD.html) |
+| UK | [MHRA eCTD guidance](https://www.gov.uk/government/publications/international-recognition-procedure/ectd-guidance-for-irp-mas-and-lifecycle) |
+| US | [FDA eCTD page](https://www.fda.gov/drugs/electronic-regulatory-submission-and-review/electronic-common-technical-document-ectd) |
+| Canada | [Filing submissions electronically](https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/applications-submissions/guidance-documents/filing-submissions-electronically.html) |
+| Switzerland | [Swissmedic eCTD page](https://www.swissmedic.ch/swissmedic/en/home/services/submissions/ectd.html) |
+| Australia | [TGA AU Module 1 v3.2](https://www.tga.gov.au/resources/resources/user-guide/ectd-au-module-1-and-regional-information-v32) |
+| Japan | [PMDA package page](https://www.pmda.go.jp/int-activities/int-harmony/ich/0092.html) |
 
-With Node.js installed, run:
+## 6. Technical overview
 
-```powershell
-npm test
+The site is static, with no backend and no runtime dependencies. All comparison work happens in the browser.
+
+| File | Responsibility |
+|---|---|
+| `index.html` | Page structure and Content Security Policy |
+| `core.js` | Comparison, filtering, data validation, folder paths and CSV |
+| `data.js` | Regions, headings, pointers and dataset metadata |
+| `zip.js` | Planning ZIP creation |
+| `app.js` | Interface, state and exports |
+| `style.css` | Themes, responsive layout and print rules |
+| `tests/` | Reference tests and browser tests |
+| `scripts/` | Build, local server and documentation screenshots |
+
+The app checks its own data when it starts and refuses to show results if it finds structural errors, such as duplicate numbers or a pointer that conflicts with a recorded heading.
+
+**Privacy and security:** the site has no login, uploads, cookies or browser storage, and its security policy allows resources only from its own origin. Search terms and selections appear in the page address, so shared links reveal them. Opening a source link connects to that authority's website.
+
+**Publishing:** GitHub Pages publishes from `master` after the tests pass. Pull requests run the tests without publishing.
+
+### Develop and test
+
+Use Node.js 24 or later:
+
+```sh
+npm ci
 npm run check
+npx playwright install chromium
+npm run build
+npm run test:browser
+npm start
 ```
 
-Interactive browser and visual regression testing are not yet automated.
+To refresh the screenshots in this document, run `npm start` in one terminal and `node scripts/capture-doc-screenshots.js` in another.
 
-## 11. Known limitations and risks
+On Windows, `npm run test:browser` has stalled after finishing. If that happens, run `npm start` separately and set `ECTD_TEST_URL=http://127.0.0.1:4173/` before running the tests.
 
-| Risk or limitation | Impact | Recommended control |
+## 7. Limitations
+
+| Limitation | Effect | What to do |
 |---|---|---|
-| Regulatory content is maintained manually | Dataset may become outdated | Assign an owner, review regularly and display the dataset date |
-| No central deployment | Users may run different versions | Use controlled distribution or deploy internally |
-| No authority validation engine | Results can be mistaken for formal validation | Retain the visible disclaimer and user training |
-| Applicability is simplified | Product/procedure-specific exceptions may not be represented | Confirm all decisions against current authority guidance |
-| No audit trail | Comparisons and exports are not centrally traceable | Store approved outputs in the regulated document repository |
-| No automated browser tests | UI regressions may not be detected by unit tests | Add end-to-end and visual testing before deployment |
-| External font request | May conflict with privacy or network policy | Self-host the font or use a system-font stack |
-| No authentication or authorization | Unsuitable for protected data if publicly hosted as-is | Add enterprise access controls during deployment design |
+| Content is maintained by hand | It can become outdated | Check the dataset date and confirm against the authority source |
+| No requirement assessment | The tool does not say what a submission must contain | Use authority guidance and regulatory judgement |
+| Selected headings for US, Canada and Switzerland | Some headings are not shown | Use the official source link |
+| Editorial topic groups and pointers | They can be incomplete or debatable | Treat them as a place to start, and have them reviewed |
+| No eCTD v4.0 model | EU and US v4.0 structures are not shown | Use the authority's v4.0 documents |
+| Public website with no access control | Anyone with the link can open it | Do not put confidential content in search terms or shared links |
+| No audit trail or approval workflow | Exports are not controlled records | Store approved outputs in your document system |
 
-## 12. Maintenance procedure
+## 8. Ownership
 
-### 12.1 Regulatory data change
-
-1. Identify the changed authority requirement.
-2. Save the official source URL and effective date.
-3. Update only the affected records in `data.js`.
-4. Update `DATASET_META.version` and `lastReviewedAt`.
-5. Run `npm run check`.
-6. Perform a peer review with a regulatory subject-matter expert.
-7. Test the changed region against at least two other regions in the browser.
-8. Distribute the complete approved application folder as a new version.
-
-### 12.2 Functional code change
-
-1. Keep domain logic in `core.js` where possible.
-2. Add or update a regression test.
-3. Run the full check command.
-4. Test search, filters, hierarchy expansion and all three exports.
-5. Update the application version and this documentation when behavior changes.
-
-## 13. Recommended path to an internal web application
-
-The static architecture can be deployed internally, but production use should include:
-
-### Phase 1 — Controlled static hosting
-
-- host the files on an approved internal web platform;
-- assign a stable internal URL;
-- use HTTPS;
-- remove or self-host external font dependencies;
-- add security headers and a Content Security Policy;
-- establish release ownership and version control;
-- perform accessibility and cross-browser testing.
-
-### Phase 2 — Governed regulatory content
-
-- separate regulatory content from presentation code;
-- introduce a controlled review and approval workflow;
-- record source version, effective date, reviewer and approval date per region;
-- add a visible change log;
-- notify users when a dataset version changes.
-
-### Phase 3 — Extended product capabilities
-
-- saved and shareable comparisons;
-- downloadable comparison reports with approval metadata;
-- role-based administration;
-- structured content management;
-- automated source-change monitoring;
-- optional eCTD sequence inspection as a separate, validated capability;
-- usage analytics that comply with organizational privacy requirements.
-
-## 14. Support and ownership
-
-Before wider distribution, the following responsibilities must be assigned:
+Before wider use, these roles need to be assigned:
 
 | Role | Responsibility | Assigned to |
 |---|---|---|
-| Product owner | Scope, priorities and stakeholder decisions | To be assigned |
-| Regulatory data owner | Accuracy, review cadence and authority interpretation | To be assigned |
-| Technical owner | Code, deployment, security and support | To be assigned |
-| Quality reviewer | Release evidence and process compliance | To be assigned |
-| User support contact | Questions, incidents and feedback | To be assigned |
+| Product owner | Scope and priorities | To be assigned |
+| Regulatory data owner | Accuracy, review cycle and interpretation | To be assigned |
+| Regulatory reviewer | Independent review of validation and pointers | To be assigned |
+| Technical owner | Code, hosting and security | To be assigned |
 
-## 15. Glossary
+## 9. Glossary
 
-| Term | Definition |
+| Term | Meaning |
 |---|---|
 | eCTD | Electronic Common Technical Document |
-| Module 1 | Region-specific administrative and prescribing information |
-| MAA | Marketing Authorisation Application |
-| NDA | New Drug Application |
-| BLA | Biologics License Application |
-| NDS / SNDS | New Drug Submission / Supplemental New Drug Submission |
-| PSUR / PBRER | Periodic Safety Update Report / Periodic Benefit-Risk Evaluation Report |
-| RMP | Risk Management Plan |
-| REMS | Risk Evaluation and Mitigation Strategy |
-| DTD | Document Type Definition |
-| Lifecycle | Management of submission content across sequences and regulatory activities |
+| Module 1 | Region-specific administrative and product information |
+| IRP | International Recognition Procedure (UK) |
+| DTD | Document Type Definition, which defines an XML structure |
+| NDA, BLA, ANDA, IND | US application types |
+| RMP, REMS | Risk Management Plan; Risk Evaluation and Mitigation Strategy |
 
-## 16. Disclaimer
+## 10. Disclaimer
 
-The eCTD Module 1 Checker is a reference and planning aid. It is not a regulatory authority system, an approved submission validator or a substitute for current official guidance and qualified regulatory judgment. Users remain responsible for verifying all submission requirements against the latest specifications and instructions of the relevant authority.
-# Historical documentation
-
-This document describes an earlier application version. For the current version, use [README.md](README.md) and [VALIDATION_REPORT.md](VALIDATION_REPORT.md). The previous mandatory labels, cross-region submission-type equivalences and official-folder claims have been superseded by the reviewed scope documented there.
+This is a reference and planning aid. It is not an authority system, a dossier validator or a replacement for current official guidance and qualified regulatory judgement. Users must confirm requirements against the latest authority sources.

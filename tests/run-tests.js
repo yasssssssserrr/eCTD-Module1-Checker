@@ -185,10 +185,29 @@ test('all displayed headings carry review evidence without invented requiredness
   }
 });
 
-test('Australian dataset covers all 65 v3.2 heading elements', () => {
+test('Australian dataset covers all 66 v3.2 heading elements, including 6.1', () => {
   const numbers = data.ECTD_DATABASE.flatMap(entry => entry.regions.au ? [entry.regions.au.num] : []);
-  assert.equal(numbers.length, 65);
-  assert.equal(new Set(numbers).size, 65);
+  assert.equal(numbers.length, 66);
+  assert.equal(new Set(numbers).size, 66);
+  assert.ok(numbers.includes('6.1'));
+});
+
+test('Japanese dataset covers all 20 Module 1 context-of-use codes, including 1.13', () => {
+  const numbers = data.ECTD_DATABASE.flatMap(entry => entry.regions.jp ? [entry.regions.jp.num] : []);
+  assert.equal(numbers.length, 20);
+  assert.ok(numbers.includes('1.13.4.1.3'));
+  const paths = core.buildFolderPaths(data.ECTD_DATABASE, 'jp', 'all');
+  assert.ok(paths.includes('m1/jp/11341-documents-for-pmda-copy/113412-novel-excipient/'));
+});
+
+test('Canadian placement restrictions from Health Canada stay visible', () => {
+  const section = id => data.ECTD_DATABASE.find(entry => entry.id === id).regions.ca;
+  assert.match(section('fee-forms').reqCondition, /keine Dokumente/);
+  assert.match(section('environment').reqCondition, /keine Dokumente/);
+  assert.match(section('lifecycle-table').reqCondition, /nicht mehr erforderlich/);
+  assert.match(section('table-of-contents').reqCondition, /Nicht-eCTD/);
+  assert.match(section('compliance-site-ca').reqCondition, /Unterabschnitten/);
+  assert.equal(data.REGIONS.ca.source.url.includes('organization-document-placement'), true);
 });
 
 test('official unnumbered EU sections are allowed only when declared', () => {
@@ -200,6 +219,31 @@ test('official unnumbered EU sections are allowed only when declared', () => {
   const invalid = { ...original, id: 'missing-number', parentId: null, regions: { eu: { ...original.regions.eu, num: '', title: 'Missing number' } } };
   const result = core.validateDatabase([...data.ECTD_DATABASE, invalid], data.REGIONS, data.SUBMISSION_TYPES);
   assert.ok(result.errors.some(error => error.includes('missing-number/eu requires num and title')));
+});
+
+test('unmapped regions expose editorial cross-references in rows, search and CSV', () => {
+  const model = core.buildComparisonModel(data.ECTD_DATABASE, 'eu', 'us', 'all');
+  const row = model.rows.find(item => item.id === 'environment');
+  assert.equal(row.b, null);
+  assert.equal(row.relatedB[0].num, '1.12.14');
+  assert.ok(core.filterComparisonRows(model.rows, { search: '1.12.14' }).matchingIds.has('environment'));
+  assert.match(core.buildComparisonCsv([row], data.REGIONS.eu, data.REGIONS.us, data.DATASET_META), /1\.12\.14 Environmental Analysis/);
+  assert.deepEqual([...row.relatedA], []);
+  const pointers = data.ECTD_DATABASE.find(entry => entry.id === 'orphan-decision-ch').crossReferences;
+  assert.equal(pointers.eu[0].num, '1.7');
+  assert.equal(pointers.us[0].num, '1.12.17');
+  assert.equal(pointers.au[0].num, '1.5.2');
+});
+
+test('validation rejects cross-references that conflict with the dataset', () => {
+  const entries = data.ECTD_DATABASE.map(entry => ({ ...entry }));
+  const target = entries.find(entry => entry.id === 'environment');
+  target.crossReferences = { eu: [{ num: '1.2', title: 'Duplicate' }], us: [{ num: '1.2', title: 'Wrong title' }, { num: 'x', title: 'Bad number' }] };
+  const { errors } = core.validateDatabase(entries, data.REGIONS, data.SUBMISSION_TYPES);
+  assert.ok(errors.some(error => error.includes('duplicates a direct mapping')));
+  assert.ok(errors.some(error => error.includes('is invalid')));
+  const wrongTitle = entries.map(entry => entry.id === 'environment' ? { ...entry, crossReferences: { us: [{ num: '1.14', title: 'Wrong title' }] } } : entry);
+  assert.ok(core.validateDatabase(wrongTitle, data.REGIONS, data.SUBMISSION_TYPES).errors.some(error => error.includes('differs from')));
 });
 
 test('Canadian cover letter, forms and lifecycle table use their schema positions', () => {

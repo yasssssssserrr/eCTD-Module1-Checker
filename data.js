@@ -2,7 +2,7 @@
 (function attachEctdData(global) {
   'use strict';
   const DATASET_META = Object.freeze({
-    version: '2026.11.03', lastReviewedAt: '2026-11-03',
+    version: '2026.11.03-3', lastReviewedAt: '2026-11-03',
     scope: 'Ausgewählte Module-1-Überschriften; Nummern und Titel anhand offizieller Quellen geprüft. UK: EU-Format gemäß MHRA-Leitfaden für das International Recognition Procedure (IRP). Themenzuordnung redaktionell.',
     disclaimer: 'Referenzhilfe, keine Dossiervalidierung. Gleiche Überschriften belegen keine regulatorische Gleichwertigkeit. Die Auswahl ist nicht vollständig; Einreichpflicht und Verfahrensrelevanz sind nicht bewertet. ZIP-Ordner sind ausschließlich Planungshilfen.',
   });
@@ -14,6 +14,7 @@
     clinical: { id: 'clinical', label: 'Klinische & besondere Anforderungen' },
   };
   const EU_SPEC = 'https://esubmission.ema.europa.eu/eumodule1/eCTD%203.2.2%20-%20EU%20M1%20Implementation%20Guide%20v3.1.1.pdf';
+  const CA_PLACEMENT = 'https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/applications-submissions/guidance-documents/organization-document-placement-canadian-module-1.html';
   const CA_SPEC = 'https://www.canada.ca/content/dam/hc-sc/migration/hc-sc/dhp-mps/alt_formats/pdf/prodpharma/applic-demande/guide-ld/ctd/ectd/ectd_mod1_guide-ld_fin-eng.pdf';
   const CH_SPEC = 'https://www.swissmedic.ch/dam/swissmedic/en/dokumente/infrastruktur/os/swiss_m1_specificationforectdv.pdf.download.pdf/swiss_m1_specificationforectdv15.pdf';
   const AU_SPEC = 'https://www.tga.gov.au/resources/resources/user-guide/ectd-au-module-1-and-regional-information-v32';
@@ -21,67 +22,69 @@
   const REGIONS = {
     eu: {
       id: 'eu', label: 'EU (EMA)', flag: '🇪🇺', specVersion: 'EU M1 v3.1.1 · eCTD 3.2.2', specDate: 'Pflicht seit 01.12.2025', validationCriteria: 'EU Validation Criteria v8.2',
-      source: source('EU M1 Implementation Guide v3.1.1', EU_SPEC, 'Appendix 2, S. 32–46'),
+      source: source('EU M1 Implementation Guide v3.1.1', EU_SPEC, 'Appendix 2, S. 32–49'),
       overviewUrl: 'https://esubmission.ema.europa.eu/eumodule1/index.htm',
       reviewNote: 'Ausgewählte Überschriften aus Appendix 2. eCTD v4.0 ist hier nicht modelliert: optional für neue zentralisierte Zulassungsanträge seit 22.12.2025, dringend empfohlen ab Q1 2027, verpflichtend ab Q1 2028.',
     },
     uk: {
-      id: 'uk', label: 'UK (MHRA)', flag: '🇬🇧', specVersion: 'EU-Format gemäß MHRA-IRP-Leitfaden', specDate: 'UK-spezifische Inhalte in Modul 1', validationCriteria: 'MHRA-Anleitung und EU-Struktur',
+      id: 'uk', label: 'UK (MHRA)', flag: '🇬🇧', specVersion: 'EU-Format gemäß MHRA-IRP-Leitfaden', specDate: 'Leitfaden aktualisiert am 09.10.2026', validationCriteria: 'MHRA-Anleitung und EU-Struktur',
       source: source('MHRA eCTD guidance', 'https://www.gov.uk/government/publications/international-recognition-procedure/ectd-guidance-for-irp-mas-and-lifecycle', 'EU-Format-Vorgabe; Überschriften aus EU Appendix 2'),
       structureSource: source('EU-Struktur als Formatreferenz', EU_SPEC, 'Appendix 2'),
-      reviewNote: 'Der zitierte MHRA-Leitfaden verlangt für IRP-Zulassungsanträge EU-Format mit UK-Inhalten in Modul 1. Andere UK-Verfahren sind damit nicht belegt. Keine unabhängige Prüfung aller UK-Verfahrensregeln und keine Gleichsetzung mit EU-Recht.',
+      reviewNote: 'Der zitierte MHRA-Leitfaden verlangt für IRP-Zulassungsanträge EU-Format mit UK-Inhalten in Modul 1. UK-Dokumente liegen dort unter anderem in 1.0, 1.2, 1.9 und Additional Data. Andere UK-Verfahren sind damit nicht belegt. Keine unabhängige Prüfung aller UK-Verfahrensregeln und keine Gleichsetzung mit EU-Recht.',
     },
     us: {
       id: 'us', label: 'USA (FDA)', flag: '🇺🇸', specVersion: 'US Regional DTD v3.3 · eCTD 3.2.2', specDate: 'Backbone Specification v2.6', validationCriteria: 'FDA Specifications for eCTD Validation Criteria v4.7 (ab 16.10.2026)',
-      source: source('FDA Module 1 Backbone Specification v2.6', 'https://www.fda.gov/media/159382/download', 'Appendix 1: DTD v3.3, S. 21–46; Titel: Comprehensive Table of Contents Headings and Hierarchy v2.3.5'),
+      source: source('FDA Module 1 Backbone Specification v2.6', 'https://www.fda.gov/media/159382/download', 'Appendix 1: DTD v3.3, S. 23–43; Titel: Comprehensive Table of Contents Headings and Hierarchy v2.3.5'),
       overviewUrl: 'https://www.fda.gov/drugs/electronic-regulatory-submission-and-review/electronic-common-technical-document-ectd',
-      reviewNote: 'eCTD v4.0 wird für bestimmte neue Anträge seit 16.09.2024 unterstützt. Seit 16.10.2026 können auch in v3.2.2 begonnene NDA, BLA, ANDA, IND und Master Files per Forward Compatibility in v4.0 fortgeführt werden. Hier wird die DTD-v3.3-Struktur gezeigt, kein v4.0-Modell.',
+      reviewNote: 'Neue Anträge werden seit 16.09.2024 auch in eCTD v4.0 angenommen. Seit 16.10.2026 können auch in v3.2.2 begonnene NDA, BLA, ANDA, IND und Master Files per Forward Compatibility in v4.0 fortgeführt werden. Ab 16.01.2027 weist die FDA Einreichungen zurück, die die neuen v3.2.2-Validierungen 2024 und 2025 nicht bestehen. Hier wird die DTD-v3.3-Struktur gezeigt, kein v4.0-Modell.',
     },
     ca: {
-      id: 'ca', label: 'Kanada (Health Canada)', flag: '🇨🇦', specVersion: 'Canadian M1 Schema v2.2', specDate: 'Heading-Referenz: Backbone Guide 2012', validationCriteria: 'eCTD Validation Rules v5.3',
-      source: source('Creation of the Canadian Module 1 Backbone', CA_SPEC, 'Appendix B, Table 5, S. 19–21'),
-      overviewUrl: 'https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/applications-submissions/guidance-documents/ectd/notice-validation-rules-regulatory-transactions-submitted-health-canada-electronic-common-technical-document-format-2016-12-1.html',
-      reviewNote: 'Nummern aus der veröffentlichten Schema-v2.2-Referenz. Aktuelle Verfahrensanforderungen zusätzlich mit Health Canada abstimmen.',
+      id: 'ca', label: 'Kanada (Health Canada)', flag: '🇨🇦', specVersion: 'Canadian M1 Schema v2.2', specDate: 'Dokumentenablage: Stand 02.04.2024', validationCriteria: 'eCTD Validation Rules v5.3',
+      source: source('Organization and document placement for Canadian module 1', CA_PLACEMENT, 'Tabelle Module 1, Stand 02.04.2024; Struktur: Backbone Guide 2012, Table 5, S. 19–21'),
+      packageUrl: CA_SPEC, packageLabel: 'Backbone Guide 2012',
+      overviewUrl: 'https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/applications-submissions/guidance-documents/filing-submissions-electronically.html',
+      reviewNote: 'Laut Health Canada hat die Ablagetabelle Vorrang vor anderen Veröffentlichungen, und Transaktionen außerhalb dieser Struktur werden abgelehnt. Sie wird periodisch geändert. Der Leitfaden zur eCTD-Vorbereitung ist nur auf Anfrage erhältlich und wurde hier nicht geprüft.',
     },
     ch: {
       id: 'ch', label: 'Schweiz (Swissmedic)', flag: '🇨🇭', specVersion: 'Swiss M1 Specification (Titel: v1.5)', specDate: 'Dokumentrevision 1.6 · 18.07.2024', validationCriteria: 'Swiss eCTD Validation Criteria v1.5',
-      source: source('Swiss Module 1 Specification for eCTD', CH_SPEC, 'Appendix 1, Table 4'),
+      source: source('Swiss Module 1 Specification for eCTD', CH_SPEC, 'Appendix 1, Tabellen 1 und 4'),
       overviewUrl: 'https://www.swissmedic.ch/swissmedic/en/home/services/submissions/ectd.html',
       reviewNote: 'Das offiziell verlinkte PDF heißt im Titel v1.5; der Dokumentfuß nennt Revision 1.6 vom 18.07.2024. Laut Änderungshistorie brachte 1.6 ein neues Layout ohne inhaltliche Anpassungen.',
     },
     au: {
-      id: 'au', label: 'Australien (TGA)', flag: '🇦🇺', specVersion: 'AU M1 Specification v3.2', specDate: 'v3.1 nur bis 31.10.2025 akzeptiert', validationCriteria: 'AU Validation Criteria v3.2',
-      source: source('TGA AU Module 1 and regional information v3.2', AU_SPEC, 'Heading elements, Tabellen 6–17'),
-      reviewNote: 'Alle 65 Einträge der Heading-Tabelle v3.2 erfasst und geprüft. Erforderliche Dokumente richten sich nach der TGA Document Matrix und dem Sequenztyp.',
+      id: 'au', label: 'Australien (TGA)', flag: '🇦🇺', specVersion: 'AU M1 Specification v3.2', specDate: 'Gültig seit 01.04.2025 · v3.1 nur bis 31.10.2025', validationCriteria: 'AU Validation Criteria v3.2',
+      source: source('TGA AU Module 1 and regional information v3.2', AU_SPEC, 'Heading elements, Tabellen 6–18'),
+      reviewNote: 'Alle 66 Einträge der Heading-Tabellen v3.2 erfasst und geprüft, einschließlich 6.1 Medical Device. Die Inhaltsbeschreibungen im TGA-Leitfaden CTD Module 1 wurden nicht geprüft. Erforderliche Dokumente richten sich nach der TGA Document Matrix und dem Sequenztyp.',
     },
     jp: {
       id: 'jp', label: 'Japan (PMDA)', flag: '🇯🇵', specVersion: 'JP eCTD v4.0 · Package v1.6.0.3', specDate: 'JP CV 2026-06 · JP IG v1.6.0', validationCriteria: 'JP Check Items v1.6.0.0',
       source: source('PMDA eCTD v4 implementation package', 'https://www.pmda.go.jp/int-activities/int-harmony/ich/0092.html', 'Package v1.6.0.3: JP_CL4-context-of-use.gc_v4.xml'),
       packageUrl: 'https://www.pmda.go.jp/files/000280834.zip',
-      reviewNote: 'Context-of-Use-Codes mit der offiziellen Genericode-Datei abgeglichen. Englische Titel stammen von PMDA; Themenübersetzungen sind redaktionell.',
+      reviewNote: 'Alle 20 Module-1-Codes mit der offiziellen Genericode-Datei abgeglichen. Englische Titel stammen von PMDA; Themenübersetzungen sind redaktionell.',
     },
   };
   const raw = [];
+  const SUBSECTIONS = 'Laut Health Canada Dokumente nur in den Unterabschnitten ablegen.';
   function row(id, topic, focus, definitions, parentId = null, note = '') {
     const regions = Object.fromEntries(Object.entries(definitions).map(([region, definition]) => {
-      const [num, title] = definition.split('|');
-      return [region, { num, title, unnumbered: !num, requirement: 'not-assessed', submissionTypes: [focus], reviewedAt: DATASET_META.lastReviewedAt, reviewStatus: region === 'uk' ? 'format-reference' : 'source-checked' }];
+      const [num, title, reqCondition = ''] = definition.split('|');
+      return [region, { num, title, reqCondition, unnumbered: !num, requirement: 'not-assessed', submissionTypes: [focus], reviewedAt: DATASET_META.lastReviewedAt, reviewStatus: region === 'uk' ? 'format-reference' : 'source-checked' }];
     }));
     raw.push({ id, topic, parentId, note, regions });
   }
   const euUk = (num, title) => ({ eu: `${num}|${title}`, uk: `${num}|${title}` });
 
-  row('correspondence', 'Korrespondenz', 'admin', { ca: '1.0|Correspondence', au: '1.0|Correspondence' });
-  row('cover-letter', 'Anschreiben / Cover Letter', 'admin', { ...euUk('1.0', 'Cover Letter'), us: '1.2|Cover Letters', ca: '1.0.1|Cover letter', ch: '1.0|Cover Letter', au: '1.0.1|Cover letter' });
-  row('lifecycle-table', 'Lifecycle Management Table', 'admin', { ca: '1.0.2|Life Cycle Management Table', au: '1.0.2|Lifecycle management tracking table' }, 'correspondence');
+  row('correspondence', 'Korrespondenz', 'admin', { ca: `1.0|Correspondence|${SUBSECTIONS}`, au: '1.0|Correspondence' });
+  row('cover-letter', 'Anschreiben / Cover Letter', 'admin', { ...euUk('1.0', 'Cover Letter'), us: '1.2|Cover Letters', ca: '1.0.1|Cover Letter', ch: '1.0|Cover Letter', au: '1.0.1|Cover letter' });
+  row('lifecycle-table', 'Lifecycle Management Table', 'admin', { ca: '1.0.2|Life Cycle Management Table|Laut Health Canada nicht mehr erforderlich, wird aber angenommen.', au: '1.0.2|Lifecycle management tracking table' }, 'correspondence');
   row('response-rfi-au', 'Antwort auf Informationsanfrage (AU)', 'admin', { au: '1.0.3|Response to Request for Information' }, 'correspondence');
   row('hc-correspondence-ca', 'Von Health Canada ausgestellte Korrespondenz (CA)', 'admin', { ca: '1.0.3|Copy of Health Canada issued correspondence' }, 'correspondence');
   row('solicited-information-ca', 'Angeforderte Informationen (CA)', 'admin', { ca: '1.0.4|Health Canada Solicited Information' }, 'correspondence');
   row('meeting-information-ca', 'Meeting-Informationen (CA)', 'admin', { ca: '1.0.5|Meeting Information' }, 'correspondence');
   row('reconsideration-ca', 'Unterlagen zur Überprüfungsanfrage (CA)', 'admin', { ca: '1.0.6|Request for Reconsideration Documentation' }, 'correspondence');
   row('note-to-reviewer-ca', 'Allgemeiner Hinweis an Gutachter (CA)', 'admin', { ca: '1.0.7|General Note to Reviewer' }, 'correspondence');
-  row('table-of-contents', 'Inhaltsverzeichnis (JP)', 'admin', { jp: '1.1|table of contents' }, null, 'Ein index.xml ist kein einzureichendes Inhaltsverzeichnis-Dokument. Für EU/UK wird kein fiktiver 1.1-Ordner erzeugt.');
-  row('administrative-information', 'Administrative Informationen', 'admin', { us: '1.3|Administrative Information', ca: '1.2|Administrative Information', au: '1.2|Administrative Information' });
+  row('table-of-contents', 'Inhaltsverzeichnis (JP/CA)', 'admin', { jp: '1.1|table of contents', ca: '1.1|Table of Contents|Nur im Nicht-eCTD-Format; in eCTD kein Inhaltsverzeichnis einreichen.' }, null, 'Ein index.xml ist kein einzureichendes Inhaltsverzeichnis-Dokument. Für EU/UK wird kein fiktiver 1.1-Ordner erzeugt.');
+  row('administrative-information', 'Administrative Informationen', 'admin', { us: '1.3|Administrative Information', ca: `1.2|Administrative Information|${SUBSECTIONS}`, au: '1.2|Administrative Information' });
   row('application-forms', 'Antragsformulare', 'admin', { ...euUk('1.2', 'Application Form'), us: '1.1|Forms', ca: '1.2.1|Application Forms', ch: '1.2.1|Form - Application', au: '1.2.1|Application forms', jp: '1.2|application form (copy)' });
   row('application-group-ch', 'Antrag / Änderung (CH)', 'admin', { ch: '1.2|Application for Marketing Authorisation and Variation' });
   row('additional-forms-ch', 'Weitere Formulare (CH)', 'admin', { ch: '1.2.2|Forms - Additional' }, 'application-group-ch');
@@ -89,19 +92,19 @@
   row('manufacturing-annexes-ch', 'Anhänge zur Herstellung (CH)', 'admin', { ch: '1.2.4|Annexes - Manufacturing' }, 'application-group-ch');
   row('other-annexes-ch', 'Weitere Anhänge (CH)', 'admin', { ch: '1.2.5|Annexes - Others' }, 'application-group-ch');
   row('field-copy', 'Field Copy Certification', 'admin', { us: '1.3.2|Field Copy Certification' }, 'administrative-information');
-  row('fee-forms', 'Fee Forms (Gebühren)', 'admin', { ca: '1.2.2|Fee Forms' }, 'administrative-information');
+  row('fee-forms', 'Fee Forms (Gebühren)', 'admin', { ca: '1.2.2|Fee Forms|Laut Health Canada keine Dokumente hier ablegen: Das Gebührenformular ist in der RT-XML-Datei bzw. im Master-File-Antrag enthalten.' }, 'administrative-information');
   row('patent-exclusivity', 'Patent & Exklusivität', 'admin', { us: '1.3.5|Patent and Exclusivity', ca: '1.2.4|Intellectual Property Information', au: '1.2.3|Patent certification', jp: '1.4|patent status' }, 'administrative-information', 'Thematische Zuordnung: Patentstatus, Zertifizierung und Exklusivität haben unterschiedliche rechtliche Bedeutungen.');
   row('debarment', 'Debarment Certification', 'admin', { us: '1.3.3|Debarment Certification' }, 'administrative-information');
   row('presubmission-details-au', 'Pre-submission-Angaben (AU)', 'admin', { au: '1.2.2|Pre-submission details' }, 'administrative-information');
   row('change-sponsor-au', 'Sponsorwechsel (AU)', 'admin', { au: '1.2.4|Change in sponsor' }, 'administrative-information');
   row('certification-forms-ca', 'Zertifizierungs- und Bestätigungsformulare (CA)', 'admin', { ca: '1.2.3|Certification and Attestation Forms' }, 'administrative-information');
-  row('compliance-site-ca', 'Compliance- und Standortinformationen (CA)', 'admin', { ca: '1.2.5|Compliance and Site Information' }, 'administrative-information');
+  row('compliance-site-ca', 'Compliance- und Standortinformationen (CA)', 'admin', { ca: `1.2.5|Compliance and Site Information|${SUBSECTIONS}` }, 'administrative-information');
   row('financial-certification-us', 'Finanzielle Offenlegung (US)', 'admin', { us: '1.3.4|Financial Certification and Disclosure' }, 'administrative-information');
   row('priority-voucher-us', 'Priority Review Voucher (US)', 'admin', { us: '1.3.6|Tropical Disease Priority Review Voucher' }, 'administrative-information');
   row('certificates-jp', 'Bescheinigungen (JP)', 'admin', { jp: '1.3|certificates' });
   row('references-us', 'References (US)', 'admin', { us: '1.4|References' });
   row('letters-of-authorization', 'Letters of Authorization (LoA)', 'admin', { us: '1.4.1|Letter of Authorization' }, 'references-us');
-  row('hc-summaries', 'Health Canada Summaries', 'clinical', { ca: '1.4|Health Canada Summaries' });
+  row('hc-summaries', 'Health Canada Summaries', 'clinical', { ca: `1.4|Health Canada Summaries|${SUBSECTIONS}` });
   row('pseat-cta', 'PSEAT-CTA (Kanada)', 'clinical', { ca: '1.4.1|PSEAT-CTA' }, 'hc-summaries');
   row('application-status', 'Application Status (US)', 'admin', { us: '1.5|Application Status' });
   row('meetings-us', 'Meetings (US)', 'admin', { us: '1.6|Meetings' });
@@ -111,7 +114,7 @@
   row('information-amendment', 'Information Amendment (US)', 'admin', { us: '1.11|Information Amendment: Information Not Covered Under Modules 2 to 5' });
   row('other-correspondence', 'Other Correspondence (US)', 'admin', { us: '1.12|Other Correspondence' });
   row('annual-report', 'Jahresbericht / Annual Report (US)', 'safety', { us: '1.13|Annual Report' }, null, 'Annual Report, PSUR und PBRER sind keine gleichwertigen Verfahren.');
-  row('product-information', 'Produktinformation (Labeling)', 'product', { ...euUk('1.3', 'Product Information'), us: '1.14|Labeling', ca: '1.3|Product Information', ch: '1.3|Product Information and Packaging Material', au: '1.3|Medicine information and labelling' });
+  row('product-information', 'Produktinformation (Labeling)', 'product', { ...euUk('1.3', 'Product Information'), us: '1.14|Labeling', ca: `1.3|Product Information|${SUBSECTIONS}`, ch: '1.3|Product Information and Packaging Material', au: '1.3|Medicine information and labelling' });
   row('prescribing-information', 'SmPC / Product Monograph / PI', 'product', { ...euUk('1.3.1', 'SmPC, Labelling and Package Leaflet'), ca: '1.3.1|Product Monograph', ch: '1.3.1|Information for Professionals', au: '1.3.1|Product Information and package insert', jp: '1.8|package insert (draft)' }, 'product-information', 'Dokumentarten überschneiden sich thematisch; Umfang und Genehmigungsstatus sind regionsabhängig.');
   row('pi-clean-au', 'Product Information, bereinigt (AU)', 'product', { au: '1.3.1.1|Product Information -clean' }, 'prescribing-information');
   row('pi-annotated-au', 'Product Information, annotiert (AU)', 'product', { au: '1.3.1.2|Product Information - annotated' }, 'prescribing-information');
@@ -160,13 +163,13 @@
   row('bioavailability-ch', 'Bioverfügbarkeit (CH)', 'clinical', { ch: '1.5|Data of Bioavailability Studies (Known Active Substance without Innovation)' });
   row('bioequivalence-ch', 'Bioäquivalenz-Nachweise (CH)', 'clinical', { ch: '1.5.1|Information according to Appendix IV of the Guideline on the Investigation on Bioequivalence' }, 'bioavailability-ch');
   row('reference-product-ch', 'Unterlagen zum Referenzprodukt (CH)', 'clinical', { ch: '1.5.2|Documents on the Reference Product' }, 'bioavailability-ch');
-  row('environment', 'Umweltrisikoprüfung (ERA)', 'safety', { ...euUk('1.6', 'Environmental Risk Assessment'), ca: '1.5|Environmental Assessment Statement', ch: '1.6|Environmental Risk Assessment' });
+  row('environment', 'Umweltrisikoprüfung (ERA)', 'safety', { ...euUk('1.6', 'Environmental Risk Assessment'), ca: '1.5|Environmental Assessment Statement|Laut Health Canada keine Dokumente hier ablegen; Hinweise zur New Substances Notification beachten.', ch: '1.6|Environmental Risk Assessment' });
   row('non-gmo', 'Non-GMO', 'safety', { ...euUk('1.6.1', 'Non-GMO'), ch: '1.6.1|Non-GMO' }, 'environment');
   row('gmo', 'GMO', 'safety', { ...euUk('1.6.2', 'GMO'), ch: '1.6.2|GMO' }, 'environment');
   row('orphan-exclusivity', 'Orphan Market Exclusivity', 'clinical', euUk('1.7', 'Information relating to Orphan Market Exclusivity'));
   row('similarity', 'Similarity', 'clinical', euUk('1.7.1', 'Similarity'), 'orphan-exclusivity');
   row('market-exclusivity', 'Market Exclusivity Claim', 'clinical', euUk('1.7.2', 'Market Exclusivity'), 'orphan-exclusivity');
-  row('pharmacovigilance', 'Pharmakovigilanz / Risikomanagement', 'safety', { ...euUk('1.8', 'Information relating to Pharmacovigilance'), us: '1.16|Risk Management Plan', ca: '1.3.8|Pharmacovigilance Information', ch: '1.8|Information Relating to Pharmacovigilance', au: '1.8|Information relating to Pharmacovigilance' });
+  row('pharmacovigilance', 'Pharmakovigilanz / Risikomanagement', 'safety', { ...euUk('1.8', 'Information relating to Pharmacovigilance'), us: '1.16|Risk Management Plan', ca: `1.3.8|Pharmacovigilance Information|${SUBSECTIONS}`, ch: '1.8|Information Relating to Pharmacovigilance', au: '1.8|Information relating to Pharmacovigilance' });
   row('pv-system', 'Pharmakovigilanzsystem', 'safety', { ...euUk('1.8.1', 'Pharmacovigilance System'), ch: '1.8.1|Pharmacovigilance System', au: '1.8.1|Pharmacovigilance systems' }, 'pharmacovigilance');
   row('risk-management', 'Risk Management Plan / System', 'safety', { ...euUk('1.8.2', 'Risk-management System'), ca: '1.3.8.2|Risk Management Plan', ch: '1.8.2|Risk-Management System', au: '1.8.2|Risk management plan -clean', jp: '1.11|risk management plan (draft)' }, 'pharmacovigilance');
   row('risk-management-non-rems-us', 'Risk Management ohne REMS (US)', 'safety', { us: '1.16.1|Risk Management (Non-REMS)' }, 'pharmacovigilance');
@@ -181,12 +184,12 @@
   row('paediatrics', 'Pädiatrie', 'clinical', { ...euUk('1.10', 'Information relating to Paediatrics'), us: '1.9|Pediatric Administrative Information', ch: '1.10|Information Relating to Paediatrics', au: '1.10|Information relating to paediatrics' });
   row('pediatric-waiver', 'Pädiatrische Waiver (US)', 'clinical', { us: '1.9.1|Request for Waiver of Pediatric Studies' }, 'paediatrics');
   row('clinical-trials-eu', 'Klinische Prüfungen', 'clinical', euUk('1.9', 'Information relating to Clinical Trials'));
-  row('regional-clinical-ca', 'Regional Clinical Information (CA)', 'clinical', { ca: '1.6|Regional Clinical Information' });
+  row('regional-clinical-ca', 'Regional Clinical Information (CA)', 'clinical', { ca: `1.6|Regional Clinical Information|${SUBSECTIONS}` });
   row('bioavailability-info-ca', 'Vergleichende Bioverfügbarkeit (CA)', 'clinical', { ca: '1.6.1|Comparative Bioavailability Information' }, 'regional-clinical-ca');
   row('core-data-sheets-ca', 'Company Core Data Sheets (CA)', 'clinical', { ca: '1.6.2|Company Core Data Sheets' }, 'regional-clinical-ca');
   row('priority-review-ca', 'Priority-Review-Anträge (CA)', 'clinical', { ca: '1.6.3|Priority Review Requests' }, 'regional-clinical-ca');
   row('notice-compliance-ca', 'Notice of Compliance with Conditions (CA)', 'clinical', { ca: '1.6.4|Notice of Compliance with Conditions' }, 'regional-clinical-ca');
-  row('clinical-trials-ca', 'Clinical Trial Information (CA)', 'clinical', { ca: '1.7|Clinical Trial Information' });
+  row('clinical-trials-ca', 'Clinical Trial Information (CA)', 'clinical', { ca: `1.7|Clinical Trial Information|${SUBSECTIONS}` });
   row('study-protocol-ca', 'Studienprotokoll (CA)', 'clinical', { ca: '1.7.1|Study Protocol' }, 'clinical-trials-ca', 'In Table 5 sind die XML-Elementnamen unter 1.7 um eine Stelle versetzt (1.7.1 = m1-7-2-study-protocol).');
   row('informed-consent-ca', 'Einwilligungsformulare (CA)', 'clinical', { ca: '1.7.2|Informed Consent Forms' }, 'clinical-trials-ca');
   row('reb-refusals-ca', 'Ablehnungen durch Ethikkommissionen (CA)', 'clinical', { ca: '1.7.3|Canadian Research Ethics Board (REB) Refusals' }, 'clinical-trials-ca');
@@ -226,6 +229,15 @@
   row('nonproprietary-name-jp', 'Nicht geschützter Name (JP)', 'product', { jp: '1.9|documents concerning non-proprietary name' });
   row('poison-designation-jp', 'Einstufung als giftiger Stoff (JP)', 'safety', { jp: '1.10|data for review of designation as poisons, deleterious substances, etc.' });
   row('attached-documents-jp', 'Verzeichnis beigefügter Dokumente (JP)', 'admin', { jp: '1.12|list of attached documentation' });
+  row('medical-device-au', 'Medizinprodukt in Kombinationsantrag (AU)', 'clinical', { au: '6.1|Medical Device' }, null, 'TGA führt diesen Abschnitt außerhalb der 1.x-Nummerierung im AU-Module-1-Ordner.');
+  row('approved-product-jp', 'Unterlagen zum zugelassenen Produkt (JP)', 'product', { jp: '1.13.1|documents of approved product' });
+  row('consultation-record-jp', 'Protokoll der Vorabberatung (JP)', 'admin', { jp: '1.13.2|pre-submission consultation record (copy)' });
+  row('inquiries-jp', 'Anfragen und Antworten (JP)', 'admin', { jp: '1.13.3|inquiries(copy) and responses (copy)' });
+  row('documents-pmda-jp', 'Unterlagen für PMDA (JP)', 'admin', { jp: '1.13.4.1|documents for pmda (copy)' });
+  row('manufacturing-parameters-jp', 'Parameter der Herstellmethoden (JP)', 'admin', { jp: '1.13.4.1.1|Listing of parameters/acceptable ranges around target values/set values described in the manufacturing methods section of the application form' }, 'documents-pmda-jp');
+  row('novel-excipient-jp', 'Neuartiger Hilfsstoff (JP)', 'admin', { jp: '1.13.4.1.2|novel excipient' }, 'documents-pmda-jp');
+  row('other-pmda-jp', 'Sonstige Unterlagen für PMDA (JP)', 'admin', { jp: '1.13.4.1.3|other' }, 'documents-pmda-jp');
+  row('documents-mhlw-jp', 'Unterlagen für MHLW (JP)', 'admin', { jp: '1.13.4.2|documents for mhlw (copy)' });
   row('responses-eu', 'Antworten auf Fragen (EU/UK)', 'admin', euUk('', 'Responses to Questions'), null, 'Abschnitt ohne Nummer in der EU-Struktur.');
   row('additional-data-eu', 'Zusätzliche Daten (EU/UK)', 'admin', euUk('', 'Additional Data'), null, 'Abschnitt ohne Nummer in der EU-Struktur. MHRA verlangt hier für IRP-Anträge bestimmte Dokumente.');
 
@@ -238,7 +250,60 @@
   };
   ECTD_DATABASE.forEach(entry => {
     entry.regionalParentIds = regionalParents[entry.id] || {};
-    if (entry.regions.jp) entry.regionalParentIds.jp = null;
+    if (entry.regions.jp && !entry.parentId?.endsWith('-jp')) entry.regionalParentIds.jp = null;
+    entry.crossReferences = {};
   });
+
+  // Editorial pointers for regions without a direct mapping. They name a place to look, not an equivalent requirement.
+  const entryById = new Map(ECTD_DATABASE.map(entry => [entry.id, entry]));
+  function seeAlso(id, region, definition) {
+    const [num, title, note = ''] = definition.split('|');
+    const references = (entryById.get(id).crossReferences[region] ||= []);
+    if (!references.some(reference => reference.num === num && reference.title === title)) references.push({ num, title, note, unnumbered: !num });
+  }
+  function relateTopics(ids, extra = {}) {
+    const headings = Object.entries(extra);
+    ids.forEach(id => Object.entries(entryById.get(id).regions).forEach(([region, section]) => headings.push([region, `${section.num}|${section.title}`])));
+    ids.forEach(id => headings.forEach(([region, definition]) => {
+      if (!entryById.get(id).regions[region]) seeAlso(id, region, definition);
+    }));
+  }
+  relateTopics(['correspondence', 'other-correspondence']);
+  relateTopics(['responses-eu', 'response-rfi-au', 'solicited-information-ca', 'inquiries-jp'], { ch: '|Responses to Swissmedic LoQ' });
+  relateTopics(['additional-data-eu'], { ch: '|Additional Information' });
+  relateTopics(['meetings-us', 'meeting-information-ca', 'presubmission-au', 'consultation-record-jp']);
+  relateTopics(['fast-track-us', 'fast-track-ch', 'priority-review-ca']);
+  relateTopics(['dispute-resolution', 'reconsideration-ca']);
+  relateTopics(['letters-of-authorization', 'letters-of-access-au'], { ch: '1.2.3.1|DMF Letter of Access', ca: '1.2.6|Authorization for Sharing Information' });
+  relateTopics(['foreign-labeling', 'foreign-labeling-us']);
+  relateTopics(['foreign-regulatory-au', 'foreign-decisions-ch', 'foreign-use-jp'], { ca: '1.2.7|International Information' });
+  relateTopics(['biopharm-au', 'bioavailability-ch', 'bioavailability-info-ca'], { ca: '1.4.2|Comprehensive Summary: Bioequivalence' });
+  relateTopics(['orphan-exclusivity', 'designation-au', 'orphan-decision-ch'], { us: '1.12.17|Orphan Drug Designation' });
+  relateTopics(['conditional-ma', 'notice-compliance-ca']);
+  relateTopics(['clinical-trials-eu', 'clinical-trials-ca']);
+  seeAlso('clinical-trials-eu', 'ca', '1.2.5.3|Good Clinical Practices');
+  relateTopics(['gmo', 'gmo-consents-au']);
+  relateTopics(['risk-management', 'risk-management-non-rems-us', 'rems']);
+  relateTopics(['proprietary-names', 'trade-name-au'], { ca: '1.3.7|Look-alike/Sound-alike Assessment' });
+  relateTopics(['environment'], { us: '1.12.14|Environmental Analysis' });
+  relateTopics(['investigators-brochure-ca'], { us: '1.14.4.1|Investigational Brochure' });
+  relateTopics(['core-data-sheets-ca'], { ch: '1.2.5.2|Company Core Data Sheet (for PSURs)' });
+  relateTopics(['change-sponsor-au'], { us: '1.3.1.3|Change in Sponsor' });
+  seeAlso('lifecycle-table', 'eu', '1.0|Cover Letter|Die Tracking Table gehört in diesen Abschnitt (nicht bei EDQM-Einreichungen).');
+  seeAlso('lifecycle-table', 'uk', '1.0|Cover Letter|EU-Struktur: Die Tracking Table gehört in diesen Abschnitt.');
+  seeAlso('lifecycle-table', 'ch', '1.0|Cover Letter|Die Tracking Table gehört in diesen Abschnitt.');
+  seeAlso('patent-exclusivity', 'eu', '1.5.3|(Extended) Data/Market Exclusivity');
+  seeAlso('patent-exclusivity', 'uk', '1.5.3|(Extended) Data/Market Exclusivity');
+  seeAlso('data-exclusivity', 'us', '1.3.5|Patent and Exclusivity');
+  seeAlso('data-exclusivity', 'ca', '1.2.4.2|Data Protection Information');
+  seeAlso('prescribing-information', 'us', '1.14|Labeling');
+  seeAlso('labels', 'us', '1.14.1.1|Draft Carton and Container Labels');
+  seeAlso('patient-information', 'eu', '1.3.1|SmPC, Labelling and Package Leaflet');
+  seeAlso('patient-information', 'uk', '1.3.1|SmPC, Labelling and Package Leaflet');
+  seeAlso('specimen', 'au', '1.3.3|Label mock-ups and specimens');
+  seeAlso('generics', 'us', '1.12.11|ANDA Basis for Submission Statement');
+  seeAlso('generics', 'ch', '1.5.2|Documents on the Reference Product');
+  seeAlso('master-files-au', 'us', '1.4|References');
+  seeAlso('master-files-au', 'ch', '1.2.3|Annexes - Documents on Drug Quality');
   global.EctdData = Object.freeze({ DATASET_META, SUBMISSION_TYPES: Object.freeze(SUBMISSION_TYPES), REGIONS: Object.freeze(REGIONS), ECTD_DATABASE: Object.freeze(ECTD_DATABASE) });
 })(globalThis);

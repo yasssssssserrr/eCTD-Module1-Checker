@@ -107,7 +107,7 @@
           }
         });
 
-        if (!section.unnumbered && !/^1(?:\.\d+)+$/.test(section.num)) errors.push(`${entry.id}/${regionKey} has invalid section number ${section.num}.`);
+        if (!section.unnumbered && !/^(?:1(?:\.\d+)+|6\.1)$/.test(section.num)) errors.push(`${entry.id}/${regionKey} has invalid section number ${section.num}.`);
         const signature = section.num || section.title;
         const previous = regionNumbers[regionKey].get(signature);
         if (previous) {
@@ -129,6 +129,19 @@
             errors.push(`${entry.id}/${regionKey} lacks review evidence.`);
           }
         }
+      });
+    });
+
+    entries.forEach(entry => {
+      Object.entries(entry.crossReferences || {}).forEach(([regionKey, references]) => {
+        if (!regions[regionKey]) errors.push(`${entry.id} has a cross-reference for unknown region ${regionKey}.`);
+        references.forEach(reference => {
+          const label = `${entry.id}/${regionKey} cross-reference ${reference.num || reference.title}`;
+          if (entry.regions?.[regionKey]) errors.push(`${label} duplicates a direct mapping.`);
+          if (!reference.title || (!reference.unnumbered && !/^1(?:\.\d+)+$/.test(reference.num))) errors.push(`${label} is invalid.`);
+          const mapped = entries.find(other => other.regions?.[regionKey]?.num === reference.num && reference.num);
+          if (mapped && mapped.regions[regionKey].title !== reference.title) errors.push(`${label} differs from ${mapped.id}.`);
+        });
       });
     });
 
@@ -215,7 +228,10 @@
       const pair = direct.get(entry.id) || { a: null, b: null };
       const contextOnly = !direct.has(entry.id);
       const status = contextOnly ? 'context' : structuralStatus(pair.a, pair.b);
+      const relatedA = pair.a || contextOnly ? [] : entry.crossReferences?.[regionKeyA] || [];
+      const relatedB = pair.b || contextOnly ? [] : entry.crossReferences?.[regionKeyB] || [];
       const searchText = normalizeSearch([
+        ...[...relatedA, ...relatedB].flatMap(reference => [reference.num, reference.title]),
         entry.topic,
         pair.a?.num,
         pair.a?.title,
@@ -235,6 +251,8 @@
         entry,
         a: pair.a,
         b: pair.b,
+        relatedA,
+        relatedB,
         status,
         contextOnly,
         searchText,
@@ -329,10 +347,12 @@
   function buildComparisonCsv(rows, regionA, regionB, metadata = {}) {
     const headers = [
       'Thema',
-      `${regionA.label} – Nr.`, `${regionA.label} – Titel`, `${regionA.label} – Anforderung`,
-      `${regionB.label} – Nr.`, `${regionB.label} – Titel`, `${regionB.label} – Anforderung`,
-      'Strukturstatus', 'Hinweis', 'Quelle A', 'Quelle B', 'Prüfstatus A', 'Prüfstatus B', 'Fundstelle A', 'Fundstelle B',
+      `${regionA.label} â€“ Nr.`, `${regionA.label} â€“ Titel`, `${regionA.label} â€“ Anforderung`,
+      `${regionB.label} â€“ Nr.`, `${regionB.label} â€“ Titel`, `${regionB.label} â€“ Anforderung`,
+      'Strukturstatus', 'Hinweis', 'Quelle A', 'Quelle B', 'PrÃ¼fstatus A', 'PrÃ¼fstatus B', 'Fundstelle A', 'Fundstelle B',
+      'Verwandte Stelle A (redaktionell)', 'Verwandte Stelle B (redaktionell)',
     ];
+    const relatedCell = references => (references || []).map(reference => [reference.num, reference.title].filter(Boolean).join(' ')).join('; ');
     const statusLabels = {
       match: 'Gleiche Nummer und Bezeichnung',
       partial: 'Abweichende Struktur',
@@ -342,7 +362,7 @@
     const lines = [
       ['Datenstand', metadata.lastReviewedAt || ''].map(csvCell).join(','),
       ['Version', metadata.version || ''].map(csvCell).join(','),
-      ['Prüfumfang', metadata.scope || ''].map(csvCell).join(','),
+      ['PrÃ¼fumfang', metadata.scope || ''].map(csvCell).join(','),
       ['Ansicht', metadata.focus || 'all', 'Suche', metadata.search || '', 'Filter', metadata.filter || 'all'].map(csvCell).join(','),
       ['Haftungshinweis', metadata.disclaimer || ''].map(csvCell).join(','),
       headers.map(csvCell).join(','),
@@ -357,6 +377,7 @@
         row.a?.source?.url || '', row.b?.source?.url || '',
         row.a?.reviewStatus || '', row.b?.reviewStatus || '',
         row.a?.source?.locator || '', row.b?.source?.locator || '',
+        relatedCell(row.relatedA), relatedCell(row.relatedB),
       ].map(csvCell).join(','));
     });
     return `\uFEFF${lines.join('\n')}`;

@@ -11,7 +11,7 @@ test('loads a usable default comparison without external requests or script erro
   await expect(page.locator('#regionA')).toHaveValue('eu');
   await expect(page.locator('#regionB')).toHaveValue('us');
   await expect(page.locator('#statPairs')).not.toHaveText('0');
-  await expect(page.locator('#dataStatus')).toContainText('2026.11.03');
+  await expect(page.locator('#dataStatus')).toContainText('2026.11.03-3');
   expect(errors).toEqual([]);
   expect(external).toEqual([]);
 });
@@ -39,6 +39,25 @@ test('searches plain Latin text and resets an empty result', async ({ page }) =>
   await page.locator('#resetFilters').click();
   await expect(page.locator('#noResults')).toBeHidden();
   await expect(page.locator('#searchInput')).toHaveValue('');
+});
+
+test('an unmapped region points to a related heading or its official source', async ({ page }) => {
+  await page.goto('./?a=eu&b=us');
+  const environment = page.locator('[data-row-id="environment"]');
+  await expect(environment).toContainText('Keine Zuordnung erfasst');
+  await expect(environment).toContainText('1.12.14');
+  await expect(environment).toContainText('Environmental Analysis');
+  await expect(environment.getByRole('link', { name: /FDA/ })).toHaveAttribute('href', /fda\.gov/);
+  const experts = page.locator('[data-row-id="experts"]');
+  await expect(experts).toContainText('Keine Zuordnung erfasst');
+  await expect(experts).toContainText('In der offiziellen Quelle nachsehen');
+  await page.locator('#searchInput').fill('1.12.14');
+  await expect(environment).toBeVisible();
+});
+
+test('authority placement restrictions appear beside the heading', async ({ page }) => {
+  await page.goto('./?a=ca&b=au&q=fee');
+  await expect(page.locator('[data-row-id="fee-forms"]')).toContainText('keine Dokumente hier ablegen');
 });
 
 test('keeps regions distinct and swaps their selected values', async ({ page }) => {
