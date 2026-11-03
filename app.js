@@ -248,14 +248,28 @@
         <div class="topic-heading">${toggle}<strong>${escapeHtml(row.entry.topic)}</strong></div>
         ${row.entry.note ? `<div class="topic-note">${escapeHtml(row.entry.note)}</div>` : ''}
       </td>
-      <td class="td-region">${sectionHtml(row.a, regionA)}</td>
-      <td class="td-region">${sectionHtml(row.b, regionB)}</td>
+      <td class="td-region">${row.a ? sectionHtml(row.a, regionA) : missingHtml(row.relatedA, regionA, row.contextOnly)}</td>
+      <td class="td-region">${row.b ? sectionHtml(row.b, regionB) : missingHtml(row.relatedB, regionB, row.contextOnly)}</td>
       <td class="td-req">${requirementsHtml(row)}</td>
       <td class="td-status"><span class="status-badge status-${escapeHtml(row.status)}"><span aria-hidden="true">${status.icon}</span> ${escapeHtml(status.label)}</span></td>`;
   }
 
+  function missingHtml(related, region, contextOnly) {
+    const missing = '<span class="section-missing" title="In dieser redaktionellen Auswahl ist keine Zuordnung erfasst; dies belegt keine Abwesenheit einer regionalen Anforderung.">Keine Zuordnung erfasst</span>';
+    if (contextOnly) return missing;
+    const sourceUrl = safeUrl(region.source?.url);
+    const source = sourceUrl ? `<a class="section-source" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(region.source.locator)}">${escapeHtml(region.source.name)} ↗</a>` : '';
+    if (!related.length) return `${missing}<span class="section-hint">In der offiziellen Quelle nachsehen:</span>${source}`;
+    const items = related.map(reference => `
+      <li>
+        <span class="section-number">${reference.unnumbered ? 'ohne Nr.' : escapeHtml(reference.num)}</span>
+        <span class="section-title">${escapeHtml(reference.title)}</span>
+        ${reference.note ? `<span class="section-hint">${escapeHtml(reference.note)}</span>` : ''}
+      </li>`).join('');
+    return `${missing}<span class="section-hint" title="Redaktioneller Hinweis: zeigt, wo Sie nachsehen können. Belegt keine gleichwertigen Inhalte oder Anforderungen.">Thema verwandt, hier nachsehen:</span><ul class="section-related">${items}</ul>${source}`;
+  }
+
   function sectionHtml(section, region) {
-    if (!section) return '<span class="section-missing" title="In dieser redaktionellen Auswahl ist keine Zuordnung erfasst; dies belegt keine Abwesenheit einer regionalen Anforderung.">Keine Zuordnung erfasst</span>';
     const sourceUrl = safeUrl(section.source?.url);
     const documents = (section.documents || []).map(document => {
       const suffix = [document.format, document.note].filter(Boolean).join(' · ');
@@ -419,7 +433,7 @@
 
   function renderDataStatus() {
     if (!dom.dataStatus) return;
-    dom.dataStatus.textContent = `Regionaler Referenzdatensatz ${DATASET_META.version} · Quellenprüfung ${DATASET_META.lastReviewedAt} · EU-Dossierprüfung v7.1.0: Qualifizierungskandidat, interne Freigabe ausstehend.`;
+    dom.dataStatus.textContent = `Regionaler Referenzdatensatz ${DATASET_META.version} · Quellenprüfung ${DATASET_META.lastReviewedAt}. Referenzhilfe, keine Dossierprüfung.`;
   }
 
   function renderSources() {
@@ -435,7 +449,7 @@
         <a href="${escapeHtml(safeUrl(region.source.url))}" target="_blank" rel="noopener noreferrer">Offizielle Quelle ↗</a>
         ${region.structureSource ? `<a href="${escapeHtml(safeUrl(region.structureSource.url))}" target="_blank" rel="noopener noreferrer">EU-Strukturreferenz ↗</a>` : ''}
         ${region.overviewUrl ? `<a href="${escapeHtml(safeUrl(region.overviewUrl))}" target="_blank" rel="noopener noreferrer">Vorgaben &amp; Versionen ↗</a>` : ''}
-        ${region.packageUrl ? `<a href="${escapeHtml(safeUrl(region.packageUrl))}" target="_blank" rel="noopener noreferrer">Geprüftes Paket ↗</a>` : ''}
+        ${region.packageUrl ? `<a href="${escapeHtml(safeUrl(region.packageUrl))}" target="_blank" rel="noopener noreferrer">${escapeHtml(region.packageLabel || 'Geprüftes Paket')} ↗</a>` : ''}
       </article>`).join('');
   }
 
@@ -456,9 +470,7 @@
   function updateUrl() {
     if (!state.model || global.location.protocol === 'file:') return;
     const url = new URL(global.location.href);
-    const view = url.searchParams.get('view');
     url.search = '';
-    if (view === 'validate') url.searchParams.set('view', view);
     url.searchParams.set('a', dom.regionA.value);
     url.searchParams.set('b', dom.regionB.value);
     if (dom.submissionType.value !== 'all') url.searchParams.set('focus', dom.submissionType.value);

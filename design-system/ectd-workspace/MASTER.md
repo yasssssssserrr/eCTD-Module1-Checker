@@ -6,7 +6,7 @@ Reviewed output of the [UI/UX Pro Max skill](https://github.com/nextlevelbuilder
 
 - **Style:** Minimalism & Swiss. Grid-based, dense, functional, without decorative effects.
 - **Palette:** navy primary `#1E3A5F`, blue links and focus, slate neutrals. Dark values follow `prefers-color-scheme`; print always uses the light values.
-- **Status colors:** green for pass/match, amber for not evaluated/partial, red for failure, slate for not applicable. A status always carries its text label, never color alone.
+- **Status colors:** green for match, amber for partial, slate for no mapping. A status always carries its text label, never color alone.
 - **Contrast:** at least 4.5:1 for text and 3:1 for control boundaries, in both themes.
 - **Type:** 15px body, 13px tables and notes, 12px minimum.
 - **Targets:** at least 24×24 CSS px (WCAG 2.2 AA); 44px on coarse pointers, except 32px tree toggles in dense table rows.
@@ -17,8 +17,7 @@ Reviewed output of the [UI/UX Pro Max skill](https://github.com/nextlevelbuilder
 - **Google Fonts (Outfit, Work Sans):** the app must make no external requests. The CSP and browser tests enforce this, so it keeps the system font stack.
 - **GSAP and scroll reveal:** adds a runtime dependency, and hiding regulatory content behind animation serves no purpose.
 - **Hero + Features + CTA:** a marketing pattern. This is a work tool, so the intro stays short and the workspace comes first.
-- **Reassuring "success" styling for overall results:** a clean partial scope is not a full EU pass, so conclusions and qualification notices stay prominent and neutral or amber.
 
 ## Constraints
 
-Presentation changes must not alter wording of qualification notices, rule results, reports or exports. The downloadable HTML report has its own fixed styling in `validator/ui.mjs` and is out of scope for this system.
+Presentation changes must not alter heading data, source references, scope notices or exports.
