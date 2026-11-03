@@ -2,7 +2,7 @@
 
 | Document field | Value |
 |---|---|
-| Application version | 8.1.1 |
+| Application version | 8.2.0 |
 | Dataset version | 2026.11.03-3 |
 | Source validation date | 3 November 2026 |
 | Status | Reference tool. Source validation has not had independent review |
@@ -75,7 +75,7 @@ The **Quellen, Prüfstand & Grenzen der Prüfung** panel lists the source, locat
 
 ### Display options
 
-The site starts with the device's light or dark setting. The sun/moon button in the header, labelled Hell or Dunkel on larger screens, switches between them, and the browser remembers that choice. The site also works on phones. In a narrow window, the table scrolls sideways inside its own area.
+The site opens in light mode on every device. The sun/moon button in the header, labelled Hell or Dunkel on larger screens, switches to the other theme, and the browser remembers that choice. The site also works on phones. In a narrow window, the table scrolls sideways inside its own area.
 
 | Dark mode | Phone |
 |---|---|

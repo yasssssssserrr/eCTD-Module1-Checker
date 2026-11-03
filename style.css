@@ -1,6 +1,6 @@
 /* eCTD reference workspace — dependency-free, responsive and print-ready. Decisions: design-system/ectd-workspace/MASTER.md */
 :root {
-  color-scheme:light dark;
+  color-scheme:light;
   --bg-primary:#f8fafc; --bg-secondary:#f1f5f9; --bg-card:#ffffff; --bg-header:#ffffff; --bg-table-head:#f1f5f9; --bg-row-hover:#f8fafc; --bg-control-subtle:#e2e8f0;
   --text-primary:#0f172a; --text-secondary:#334155; --text-muted:#475569; --text-accent:#1e3a5f;
   --link:#1d4ed8; --link-hover:#1e3a8a; --focus:#1d4ed8; --border-color:#cbd5e1; --border-control:#64748b;
@@ -12,19 +12,6 @@
   --theme-icon:#1e3a5f; --theme-surface:#ffffff;
   --radius-md:10px; --radius-lg:14px; --text-xs:12px; --text-sm:13px; --text-md:15px;
   --font-sans:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-}
-@media screen and (prefers-color-scheme:dark) {
-  :root:not([data-theme="light"]) {
-    --bg-primary:#0b1220; --bg-secondary:#131c2e; --bg-card:#111a2b; --bg-header:#0e1626; --bg-table-head:#1a2438; --bg-row-hover:#162033; --bg-control-subtle:#27324a;
-    --text-primary:#e8edf5; --text-secondary:#b8c4d6; --text-muted:#a3b1c6; --text-accent:#bfdbfe;
-    --link:#93c5fd; --link-hover:#dbeafe; --focus:#93c5fd; --border-color:#2b3850; --border-control:#6b7c96;
-    --primary:#2563eb; --on-primary:#ffffff; --primary-border:#60a5fa;
-    --accent-soft:#172c4d; --on-accent-soft:#bfdbfe; --accent-soft-border:#3b6ba8; --code-bg:#252d4a; --code-text:#c7d2fe;
-    --ok-bg:#15322b; --ok-text:#a7e9c6; --ok-border:#345750; --warn-bg:#342b19; --warn-text:#eccf91; --warn-border:#d7b66b; --neutral-bg:#263044; --neutral-text:#c5d1e3; --error-bg:#492528; --error-text:#ffc9c6; --error-border:#cc7c85;
-    --info-bg:#131f36; --info-border:#60a5fa;
-    --theme-icon:#fcd34d; --theme-surface:#1a2740;
-    --toast-bg:#e8edf5; --toast-text:#0f172a; --toast-border:#94a3b8; --shadow:0 4px 20px rgb(0 0 0 / 50%);
-  }
 }
 @media screen {
   :root[data-theme="dark"] {
@@ -40,7 +27,6 @@
     --toast-bg:#e8edf5; --toast-text:#0f172a; --toast-border:#94a3b8; --shadow:0 4px 20px rgb(0 0 0 / 50%);
   }
 }
-:root[data-theme="light"] { color-scheme:light; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { margin:0; font:var(--text-md)/1.6 var(--font-sans); background:var(--bg-primary); color:var(--text-primary); }
