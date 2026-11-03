@@ -71,8 +71,11 @@ test('theme switch overrides the device setting and remembers the choice', async
   await expect(toggle).toBeVisible();
   await expect(toggle).toHaveAttribute('aria-label', 'Zum hellen Design wechseln');
   const dark = await background();
+  await expect(toggle).toContainText('Hell');
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-label', 'Zum dunklen Design wechseln');
+  await expect(toggle).toContainText('Dunkel');
+  await expect(page.locator('html')).not.toHaveClass(/theme-changing/);
   const light = await background();
   expect(light).not.toBe(dark);
   expect(await page.locator('.logo-title').evaluate(element => getComputedStyle(element).color)).not.toBe(light);
@@ -86,6 +89,30 @@ test('theme switch overrides the device setting and remembers the choice', async
   expect(await background()).not.toBe(dark);
   expect(errors).toEqual([]);
   await context.close();
+});
+
+test('theme switch stays clearly visible in both themes and all assets use versioned URLs', async ({ browser, baseURL }) => {
+  const contrast = () => {
+    const parse = value => value.match(/[\d.]+/g).map(Number);
+    const luminance = ([r, g, b]) => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+    const ratio = (a, b) => { const [x, y] = [luminance(parse(a)), luminance(parse(b))].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+    const button = document.getElementById('themeToggle');
+    const style = getComputedStyle(button);
+    const icon = [...button.querySelectorAll('svg')].find(svg => getComputedStyle(svg).display !== 'none');
+    return { icon: ratio(getComputedStyle(icon).color, style.backgroundColor), border: ratio(style.borderTopColor, getComputedStyle(document.querySelector('.app-header')).backgroundColor), label: ratio(style.color, style.backgroundColor) };
+  };
+  for (const colorScheme of ['light', 'dark']) {
+    const context = await browser.newContext({ colorScheme, baseURL });
+    const page = await context.newPage();
+    await page.goto('./');
+    await expect(page.locator('#themeToggle')).toBeVisible();
+    const result = await page.evaluate(contrast);
+    expect(result.icon).toBeGreaterThanOrEqual(3);
+    expect(result.border).toBeGreaterThanOrEqual(3);
+    expect(result.label).toBeGreaterThanOrEqual(4.5);
+    expect(await page.evaluate(() => [...document.querySelectorAll('link[rel=stylesheet], script[src]')].every(element => /\?v=[0-9a-f]{12}$/.test(element.getAttribute('href') || element.getAttribute('src'))))).toBe(true);
+    await context.close();
+  }
 });
 
 test('theme switch follows a light device by default and fits on a phone', async ({ browser, baseURL }) => {
