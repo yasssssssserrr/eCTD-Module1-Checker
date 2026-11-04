@@ -2,7 +2,7 @@
 
 | Document field | Value |
 |---|---|
-| Application version | 8.2.0 |
+| Application version | 8.3.0 |
 | Dataset version | 2026.11.03-3 |
 | Source validation date | 3 November 2026 |
 | Status | Reference tool. Source validation has not had independent review |
@@ -25,9 +25,13 @@ The EU dossier check that versions 7.0 and 7.1 included was removed in 8.0.0, be
 
 ## 2. How to use it
 
+When the site opens, a notice says that the content was compiled with AI support and has not been independently verified. Users must tick **Ich habe verstanden** before they can use the site. The notice appears once per browser session.
+
+![Data notice](docs/screenshots/00-data-notice.png)
+
 ![Comparison overview](docs/screenshots/01-overview.png)
 
-1. Open the website and choose two regions.
+1. Open the website, acknowledge the notice and choose two regions.
 2. Optionally choose a topic focus.
 3. Read the summary for each region, including its version and limits.
 4. Use the search box or the status filters to narrow the table.
@@ -158,6 +162,7 @@ The site is static, with no backend and no runtime dependencies. All comparison 
 | File | Responsibility |
 |---|---|
 | `index.html` | Page structure and Content Security Policy |
+| `notice.js` | Data notice shown when the site opens |
 | `core.js` | Comparison, filtering, data validation, folder paths and CSV |
 | `data.js` | Regions, headings, pointers and dataset metadata |
 | `zip.js` | Planning ZIP creation |
@@ -169,7 +174,7 @@ The site is static, with no backend and no runtime dependencies. All comparison 
 
 The app checks its own data when it starts and refuses to show results if it finds structural errors, such as duplicate numbers or a pointer that conflicts with a recorded heading.
 
-**Privacy and security:** the site has no login, uploads or cookies. It stores only the chosen theme in the browser, under `ectd-theme`, and nothing else. Its security policy allows resources only from its own origin. Search terms and selections appear in the page address, so shared links reveal them. Opening a source link connects to that authority's website.
+**Privacy and security:** the site has no login, uploads or cookies. It stores only the chosen theme (`ectd-theme`) and, for the current browser session, the notice acknowledgement (`ectd-notice-acknowledged`). Its security policy allows resources only from its own origin. Search terms and selections appear in the page address, so shared links reveal them. Opening a source link connects to that authority's website.
 
 **Publishing:** GitHub Pages publishes from `master` after the tests pass. Pull requests run the tests without publishing.
 
