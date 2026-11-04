@@ -15,8 +15,9 @@ async function row(page, id) {
 
 (async () => {
   const browser = await chromium.launch();
-  const capture = async (name, { url, scheme = 'light', viewport = desktop, prepare, fullPage = false }) => {
+  const capture = async (name, { url, scheme = 'light', viewport = desktop, prepare, fullPage = false, notice = false }) => {
     const context = await browser.newContext({ colorScheme: scheme, viewport, deviceScaleFactor: 1 });
+    if (!notice) await context.addInitScript(() => sessionStorage.setItem('ectd-notice-acknowledged', '1'));
     const page = await context.newPage();
     await page.goto(new URL(url, base).href);
     await page.locator('#comparisonSection').waitFor({ state: 'visible' });
@@ -24,6 +25,7 @@ async function row(page, id) {
     await (target || page).screenshot({ path: path.join(output, name), fullPage: target ? undefined : fullPage });
     await context.close();
   };
+  await capture('00-data-notice.png', { url: './?a=eu&b=us', notice: true });
   await capture('01-overview.png', { url: './?a=eu&b=us' });
   await capture('02-pointer.png', { url: './?a=eu&b=us', prepare: page => row(page, 'environment') });
   await capture('03-source-fallback.png', { url: './?a=eu&b=us', prepare: page => row(page, 'experts') });

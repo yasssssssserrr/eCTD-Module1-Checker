@@ -2,6 +2,9 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('node:fs/promises');
 
+const acknowledgeNotice = () => sessionStorage.setItem('ectd-notice-acknowledged', '1');
+test.beforeEach(async ({ page }) => { await page.addInitScript(acknowledgeNotice); });
+
 test('loads a usable default comparison without external requests or script errors', async ({ page, baseURL }) => {
   const errors = [], external = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -14,6 +17,52 @@ test('loads a usable default comparison without external requests or script erro
   await expect(page.locator('#dataStatus')).toContainText('2026.11.03-3');
   expect(errors).toEqual([]);
   expect(external).toEqual([]);
+});
+
+test('data notice requires acknowledgement once per browser session', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('./');
+  const dialog = page.locator('#dataNotice');
+  const accept = page.getByRole('checkbox', { name: 'Ich habe verstanden' });
+  await expect(page.getByRole('dialog', { name: /Wichtiger Hinweis/ })).toBeVisible();
+  await expect(dialog).toContainText('noch nicht unabhängig geprüft');
+  await expect(accept).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeVisible();
+  await page.emulateMedia({ media: 'print' });
+  await expect(dialog).toBeHidden();
+  await page.emulateMedia({ media: 'screen' });
+  await accept.focus();
+  await page.keyboard.press('Space');
+  await expect(dialog).toBeHidden();
+  await page.locator('#themeToggle').click();
+  await page.reload();
+  await expect(dialog).toBeHidden();
+  const second = await context.newPage();
+  await second.goto('./');
+  await expect(second.locator('#dataNotice')).toBeVisible();
+  expect(errors).toEqual([]);
+  await context.close();
+});
+
+test('data notice fits on a phone', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, viewport: { width: 320, height: 480 } });
+  const page = await context.newPage();
+  await page.goto('./');
+  const accept = page.locator('#dataNoticeAccept');
+  await expect(page.locator('#dataNoticeTitle')).toBeInViewport();
+  expect(await page.locator('#dataNotice').evaluate(element => element.scrollTop)).toBe(0);
+  await accept.scrollIntoViewIfNeeded();
+  await expect(accept).toBeInViewport();
+  const box = await page.locator('#dataNotice').boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(320);
+  await accept.check();
+  await expect(page.locator('#dataNotice')).toBeHidden();
+  await context.close();
 });
 
 test('restores shared filters and reveals matches under collapsed parents', async ({ page }) => {
@@ -62,6 +111,7 @@ test('authority placement restrictions appear beside the heading', async ({ page
 
 test('site opens in light mode on a dark device and the switch remembers the choice', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ colorScheme: 'dark', baseURL });
+  await context.addInitScript(acknowledgeNotice);
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -106,6 +156,7 @@ test('theme switch stays clearly visible in both themes and all assets use versi
     return { icon: ratio(getComputedStyle(icon).color, style.backgroundColor), border: ratio(style.borderTopColor, getComputedStyle(document.querySelector('.app-header')).backgroundColor), label: ratio(style.color, style.backgroundColor) };
   };
   const context = await browser.newContext({ baseURL });
+  await context.addInitScript(acknowledgeNotice);
   const page = await context.newPage();
   await page.goto('./');
   await expect(page.locator('#themeToggle')).toBeVisible();
@@ -124,6 +175,7 @@ test('theme switch stays clearly visible in both themes and all assets use versi
 
 test('theme switch starts in light mode and fits on a phone', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ colorScheme: 'light', baseURL, viewport: { width: 375, height: 700 } });
+  await context.addInitScript(acknowledgeNotice);
   const page = await context.newPage();
   await page.goto('./');
   await expect(page.locator('#themeToggle')).toHaveAttribute('aria-label', 'Zum dunklen Design wechseln');

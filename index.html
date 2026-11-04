@@ -163,6 +163,16 @@
   <footer class="app-footer"><p id="dataStatus">Datenstand wird geladen …</p></footer>
   <p class="toast" id="notification" role="status" aria-live="polite" hidden></p>
 
+  <dialog class="notice-dialog" id="dataNotice" aria-labelledby="dataNoticeTitle" aria-describedby="dataNoticeText">
+    <h2 id="dataNoticeTitle">Wichtiger Hinweis – Daten noch nicht unabhängig geprüft</h2>
+    <div id="dataNoticeText">
+      <p>Die Angaben in diesem Tool wurden mit KI-Unterstützung aus offiziellen Behördenquellen zusammengestellt. Sie wurden noch nicht unabhängig geprüft und können Fehler, Lücken oder veraltete Informationen enthalten.</p>
+      <p>Prüfen Sie alle Angaben direkt bei der zuständigen Behörde, bevor Sie sich für Planung oder regulatorische Aktivitäten darauf stützen.</p>
+      <p>Dieses Tool dient nur zu Informationszwecken.</p>
+    </div>
+    <label class="notice-accept"><input type="checkbox" id="dataNoticeAccept" autofocus> Ich habe verstanden</label>
+  </dialog>
+  <script src="notice.js"></script>
   <script src="core.js"></script>
   <script src="data.js"></script>
   <script src="zip.js"></script>
