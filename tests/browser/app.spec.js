@@ -30,8 +30,6 @@ test('data notice requires acknowledgement once per browser session', async ({ b
   await expect(page.getByRole('dialog', { name: /Wichtiger Hinweis/ })).toBeVisible();
   await expect(dialog).toContainText('noch nicht unabhängig geprüft');
   await expect(accept).toBeFocused();
-  await page.keyboard.press('Escape');
-  await expect(dialog).toBeVisible();
   await page.emulateMedia({ media: 'print' });
   await expect(dialog).toBeHidden();
   await page.emulateMedia({ media: 'screen' });
@@ -47,6 +45,34 @@ test('data notice requires acknowledgement once per browser session', async ({ b
   expect(errors).toEqual([]);
   await context.close();
 });
+
+for (const clickFirst of [false, true]) {
+  test(`data notice cannot be dismissed without acknowledgement (${clickFirst ? 'after a click' : 'no prior click'})`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL });
+    const page = await context.newPage();
+    await page.goto('./');
+    const dialog = page.locator('#dataNotice');
+    const accept = page.locator('#dataNoticeAccept');
+    await expect(dialog).toBeVisible();
+    if (clickFirst) await page.locator('#dataNoticeTitle').click();
+    for (let press = 0; press < 4; press += 1) {
+      await page.keyboard.press('Escape');
+      // Browsers close the dialog asynchronously, so an immediate check would pass falsely.
+      await page.waitForTimeout(150);
+      await expect(dialog).toBeVisible();
+    }
+    await dialog.evaluate(element => element.close());
+    await page.waitForTimeout(150);
+    await expect(dialog).toBeVisible();
+    expect(await dialog.evaluate(element => element.matches(':modal'))).toBe(true);
+    await expect(accept).not.toBeChecked();
+    expect(await page.evaluate(() => sessionStorage.getItem('ectd-notice-acknowledged'))).toBeNull();
+    await accept.check();
+    await page.waitForTimeout(150);
+    await expect(dialog).toBeHidden();
+    await context.close();
+  });
+}
 
 test('data notice fits on a phone', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ baseURL, viewport: { width: 320, height: 480 } });

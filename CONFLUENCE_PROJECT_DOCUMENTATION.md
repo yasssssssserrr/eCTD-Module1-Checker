@@ -2,7 +2,7 @@
 
 | Document field | Value |
 |---|---|
-| Application version | 8.3.0 |
+| Application version | 8.3.1 |
 | Dataset version | 2026.11.03-3 |
 | Source validation date | 3 November 2026 |
 | Status | Reference tool. Source validation has not had independent review |
