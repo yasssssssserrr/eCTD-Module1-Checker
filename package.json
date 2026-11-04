@@ -1,6 +1,6 @@
 {
   "name": "ectd-module-1-checker",
-  "version": "8.3.0",
+  "version": "8.3.1",
   "private": true,
   "description": "Browser-based comparison of regional eCTD Module 1 headings with official sources.",
   "scripts": {
